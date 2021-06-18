@@ -1,13 +1,19 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 
 
-const MenuListItem = ({itemTitle, iconClass, activeItem, onClick}) => {
+const MenuListItem = ({itemTitle, iconClass, activeItem, onClick, pointTo}) => {
     const OurIcon = iconClass;
     return (
 
        <li className={`menuItem ${activeItem?'menuItemActive':''}`} onClick={onClick}>
-            <OurIcon className="menuIcon" />
-            {itemTitle}
+            
+            <Link to={pointTo}>
+                <div className="menuItemDataContainer">
+                <OurIcon className="menuIcon" />
+                {itemTitle}
+                </div>
+            </Link>
        </li> 
        
     )

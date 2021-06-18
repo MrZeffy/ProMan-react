@@ -1,5 +1,8 @@
 import {useState} from 'react'
 import MenuListItem from './MenuListItem'
+
+
+// Icons
 import HomeIcon from '@material-ui/icons/HomeOutlined'
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import FolderIcon from '@material-ui/icons/FolderOutlined'
@@ -14,22 +17,26 @@ const menuItems = [
     {
         id: 0,
         itemTitle: 'Overview',
-        iconClass: HomeIcon
+        iconClass: HomeIcon,
+        link: '/'
     },
     {
         id: 1,
         itemTitle: 'Tracker',
-        iconClass: AccessTimeIcon
+        iconClass: AccessTimeIcon,
+        link: '/tracker'
     },
     {
         id: 2,
         itemTitle: 'Projects',
-        iconClass: FolderIcon
+        iconClass: FolderIcon,
+        link: '/projecttracker'
     },
     {
         id: 3,
         itemTitle: 'Chats',
-        iconClass: SendIcon
+        iconClass: SendIcon,
+        link: '/inbox'
     }
     
     
@@ -40,12 +47,14 @@ const settingMenu = [
     {
         id: 4,
         itemTitle: 'Settings',
-        iconClass: SettingIcon
+        iconClass: SettingIcon,
+        link: '/settings'
     },
     {
         id: 5,
         itemTitle: 'Log Out',
-        iconClass: LogoutIcon
+        iconClass: LogoutIcon,
+        link: '/logout'
     }
 ]
 
@@ -59,7 +68,7 @@ const SideBar = () => {
 
 
     const updateActive = (index) => {
-        console.log('updating');
+        
         setActiveMenuItem(index);
     }
 
@@ -78,7 +87,8 @@ const SideBar = () => {
                                 <MenuListItem key={index} iconClass={ele.iconClass}
                                 itemTitle={ele.itemTitle} 
                                 activeItem={ele.id===activeMenuItem}
-                                onClick={()=>updateActive(ele.id)}/>
+                                onClick={()=>updateActive(ele.id)}
+                                pointTo={ele.link}/>
                             )
                         })}
                     </ul>
@@ -91,7 +101,8 @@ const SideBar = () => {
                                 <MenuListItem key={index} iconClass={ele.iconClass}
                                     itemTitle={ele.itemTitle}
                                     activeItem={ele.id === activeMenuItem}
-                                    onClick={() => updateActive(ele.id)} />
+                                    onClick={() => updateActive(ele.id)} 
+                                    pointTo={ele.link}/>
                             )
                         })}
                         

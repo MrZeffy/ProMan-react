@@ -1,0 +1,28 @@
+.projectSectionContainer{
+    --heading-color: rgb(28, 28, 28);
+}
+
+.headingSection{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    
+}
+
+.headingContainer h2{
+    margin: 0;
+    color: var(--heading-color);
+}
+
+.filterContainer{
+    margin-left: auto;
+    display: flex;
+    align-items: flex-end;
+    color: var(--heading-color);
+}
+
+.filterContainer h3{
+    display: inline-block;
+    margin: 0;
+}
