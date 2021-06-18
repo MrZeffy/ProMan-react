@@ -1,5 +1,6 @@
 :root{
   --outside-padding: 60px;
+  --blue-color: rgb(69, 153 ,136);
 }
 
 body{
@@ -22,6 +23,7 @@ body{
 
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   padding: var(--outside-padding);
+  padding-right: 0;
 }
 
 
@@ -53,7 +55,7 @@ body{
 .logoLink::after{
   display: block;
   content: '';
-  background-color: rgb(255, 147, 0);
+  background-color: var(--blue-color);
   height: 6px;
   position: absolute;
   left: 0;
@@ -71,19 +73,47 @@ body{
 
 /* Navigation Menu */
 
+.menuContainer{
+  margin-top: 70px;
+}
+
 
 .menuList{
-  margin-top: 50px;
+  
   list-style-type: none;
   padding-left: 0;
 }
 
 .menuItem{
-  margin: 20px auto;
+  font-size: 1.2em;
+  font-weight: 400;
+  margin: 30px auto;  
   display: flex;
   align-items: center;
+  
+  position: relative;
+  
+  
 }
+
+
 
 .menuIcon{
   margin-right: 20px;
+}
+
+.menuItemActive::after{
+  position: absolute;
+  display: block;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 6px;
+  content: ' ';
+  background-color: var(--blue-color);
+  border-radius: 5px;
+}
+
+.bottomMenu{
+  margin-top: 200px;
 }

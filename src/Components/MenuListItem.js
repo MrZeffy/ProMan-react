@@ -1,14 +1,15 @@
 import React from 'react'
 
 
-const MenuListItem = ({itemTitle, iconClass}) => {
+const MenuListItem = ({itemTitle, iconClass, activeItem, onClick}) => {
     const OurIcon = iconClass;
     return (
 
-       <li className="menuItem">
-           <OurIcon className="menuIcon"/>
-           {itemTitle}
-       </li>
+       <li className={`menuItem ${activeItem?'menuItemActive':''}`} onClick={onClick}>
+            <OurIcon className="menuIcon" />
+            {itemTitle}
+       </li> 
+       
     )
 }
 
