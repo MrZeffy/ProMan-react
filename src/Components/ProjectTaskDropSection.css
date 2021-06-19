@@ -1,0 +1,46 @@
+.projectDropSection{
+    height: 100px;
+    width: 100%;
+    margin: 10px;
+    background-color: var(--drop-section-back);
+    border-radius: 15px;
+    padding: calc(var(--outside-padding) / 4);
+    display: flex;
+    flex-direction: column;
+
+}
+
+.projectDropSection > div{
+    margin-bottom: 15px;
+}
+
+.projectSectionDetailsContainer{
+    display: flex;
+    justify-content: flex-start;
+}
+
+.sectionHeadingContainer h4{
+    margin: 0;
+}
+
+.taskCountContainer{
+    margin-left: auto;
+    background-color: var(--drop-section-text-back);
+    padding: 3px;
+    color: var(--blue-color);
+    border-radius: 5px;
+}
+
+
+
+.addButtonContainer button{
+    width: 100%;
+    border: none;
+    outline: none;
+    background-color: var(--drop-section-text-back);
+    padding: 5px 0;
+    border-radius: 10px;
+    font-size: 1.1em;
+    cursor: pointer;
+}
+
