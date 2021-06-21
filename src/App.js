@@ -1,95 +1,101 @@
-
+import React from 'react'
 import './App.css';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
+// Sections
 import SideBar from './Components/SideBar'
 import ProjectSection from './Sections/ProjectSection';
+import InboxSection from './Sections/InboxSection';
+import OverviewSection from './Sections/OverviewSection';
+import SettingsSection from './Sections/SettingsSection';
+import TimeTracker from './Sections/TimeTracker'
+import LogoutSection from './Sections/LogoutSection'
 
-import { BrowserRouter as Router, Switch, Route, useLocation } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 
 
 
 const routeData = [
   {
     path: '/',
-    data: 'Home'
+    data: OverviewSection
   },
   {
     path: '/tracker',
-    data: 'Time Tracker'
+    data: TimeTracker
   },
   {
     path: '/projecttracker',
-    data: <ProjectSection />
+    data: ProjectSection
   },
   {
     path: '/inbox',
-    data: 'inbox'
+    data: InboxSection
   },
   {
     path: '/settings',
-    data: 'Settings'
+    data: SettingsSection
   },
   {
     path: '/logout',
-    data: 'Log out'
+    data: LogoutSection
   }
 ]
 
 function App() {
+  const [activeMenuItem, setActiveMenuItem] = React.useState(0);
   
 
 
   return (
     <div className="App">
       
-        <Router>
-        <SideBar />
+        
+        <SideBar activeMenuItem={activeMenuItem} setActiveMenuItem={setActiveMenuItem}/>
 
         <div className="mainContentContainer">
 
-
-          
-
-            <RoutingComponenet />
-
-          
-
-          
-
+            <RoutingComponenet setActiveMenuItem={setActiveMenuItem}/>
 
         </div>
 
-        </Router>
-
-      
-
+        
 
     </div>
   );
 }
 
-const RoutingComponenet = ()=>{
-  const location = useLocation();
+const RoutingComponenet = ({setActiveMenuItem})=>{
+  
 
   return (
-    <Switch>
-      
+
+    <Route render={()=>(
+     
+          <Switch>
+            <React.Fragment>
 
 
+              {routeData.map(({path, data}, index) => {
+                const Component = data;
+                return (
+                  
 
-        {routeData.map((ele, index) => (
-          
-            <Route path={ele.path} exact>
+                    <Route path={path} key={index} exact>
+                      <Component setActiveMenuItem={setActiveMenuItem} item={index}/>
 
-              {ele.data}
+                    </Route>
 
-            </Route>
-          
-        ))}
+                )
+              })}
+                              
 
-      
-    </Switch>
+            </React.Fragment>
+          </Switch>
+       
+    )}>
+
+    
+    </Route>
 
   )
 }

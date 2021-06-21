@@ -3,6 +3,7 @@ import './ProjectTaskDropSection.css'
 
 const ProjectTaskDropSection = ({heading, taskCount, tasks}) => {
     return (
+        
         <div className="projectDropSection">
             <div className="projectSectionDetailsContainer">
                 <div className="sectionHeadingContainer">

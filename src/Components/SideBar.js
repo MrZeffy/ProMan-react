@@ -1,4 +1,4 @@
-import {useState} from 'react'
+
 import MenuListItem from './MenuListItem'
 
 
@@ -60,15 +60,15 @@ const settingMenu = [
 
 
 
-const SideBar = () => {
+const SideBar = ({activeMenuItem, setActiveMenuItem}) => {
 
     
 
-    const [activeMenuItem, setActiveMenuItem] = useState(0);
+    
 
 
     const updateActive = (index) => {
-        
+        console.log(index)
         setActiveMenuItem(index);
     }
 

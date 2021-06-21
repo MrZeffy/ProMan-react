@@ -1,5 +1,6 @@
 import {useState} from 'react'
 import './ProjectSection.css'
+import { useEffect } from 'react';
 
 
 // Componenets
@@ -14,12 +15,18 @@ import ExpandMoreOutlinedIcon from '@material-ui/icons/ExpandMoreOutlined';
 
 const projectSectionHeadings = [ 'To do', 'In progress', 'Completed' ];
 
-const ProjectSection = () => {
+const ProjectSection = ({setActiveMenuItem, item}) => {
     
+    useEffect(() => {
+        console.log(item);
+        setActiveMenuItem(item);
+        
+    })
     const [taskCount, setTaskCount] = useState([0,0,0]);
     const [tasks, setTasks] = useState([[], [], []]);
     
     return (
+        <>
         <div className="projectSectionContainer">
             <div className="headingSection">
                 <div className="headingContainer">
@@ -41,6 +48,7 @@ const ProjectSection = () => {
 
 
         </div>
+        </>
     )
 }
 
