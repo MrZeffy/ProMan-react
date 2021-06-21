@@ -1,50 +1,99 @@
 
 import './App.css';
-import SideBar from './Components/SideBar'
-import ProjectSection  from './Sections/ProjectSection';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import SideBar from './Components/SideBar'
+import ProjectSection from './Sections/ProjectSection';
+
+import { BrowserRouter as Router, Switch, Route, useLocation } from 'react-router-dom';
+
+
+
+const routeData = [
+  {
+    path: '/',
+    data: 'Home'
+  },
+  {
+    path: '/tracker',
+    data: 'Time Tracker'
+  },
+  {
+    path: '/projecttracker',
+    data: <ProjectSection />
+  },
+  {
+    path: '/inbox',
+    data: 'inbox'
+  },
+  {
+    path: '/settings',
+    data: 'Settings'
+  },
+  {
+    path: '/logout',
+    data: 'Log out'
+  }
+]
 
 function App() {
+  
+
+
   return (
     <div className="App">
-      <Router>
+      
+        <Router>
         <SideBar />
 
         <div className="mainContentContainer">
-          <Switch>
-            <Route path="/" exact>
-              {/* Home componenet */}
-              Home
-            </Route>
-            <Route path="/tracker" exact>
-              {/* Time tracker */}
-              Time Tracker
-            </Route>
-            <Route path="/projecttracker" exact>
-              {/* Project tracker */}
-              <ProjectSection></ProjectSection>
-            </Route>
-            <Route path="/inbox" exact>
-              {/* Inbox */}
-              Inbox
-            </Route>
-            <Route path="/settings" exact>
-              {/* Settings */}
-              Settings
-            </Route>
-            <Route path="/logout">
-              {/* Logout */}
-              Logout
-            </Route>
-          </Switch>
+
+
+          
+
+            <RoutingComponenet />
+
+          
+
+          
+
+
         </div>
 
-      </Router>
+        </Router>
+
       
+
 
     </div>
   );
 }
+
+const RoutingComponenet = ()=>{
+  const location = useLocation();
+
+  return (
+    <Switch>
+      
+
+
+
+        {routeData.map((ele, index) => (
+          
+            <Route path={ele.path} exact>
+
+              {ele.data}
+
+            </Route>
+          
+        ))}
+
+      
+    </Switch>
+
+  )
+}
+  
+
 
 export default App;
