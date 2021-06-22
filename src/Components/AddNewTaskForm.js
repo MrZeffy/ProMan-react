@@ -1,21 +1,42 @@
 import React from 'react'
 import './AddNewTaskForm.css'
-import { TextField } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
-import { borderColor } from '@material-ui/system'
-
-const useStyles = makeStyles((theme)=>({
-    textField: {
-        borderColor: 'red',
-    },
-}));
 
 
-const AddNewTaskForm = () => {
+
+
+
+
+const AddNewTaskForm = ({id, setshowAddForm}) => {
+    
+
+    const handleCancel = ()=>{
+        setshowAddForm(false);
+    }
+
+
     return (
         <div className="formContainer">
-            <form className="ourForm">
-                <TextField id="outlined-basic" label="Outlined" variant="outlined"/>
+            <form className="ourForm" autoComplete="off">
+                
+                <h2>Enter task details</h2>
+                <input name="projectSelected" id="projectSelected" list="projectSelectedList"
+                    placeholder="Select Project" 
+                    required/>
+                <datalist id="projectSelectedList">
+                    <option value="blah"></option>
+                    <option value="blah" />
+                    <option value="black" />
+                    <option value="sheep" />
+                </datalist>
+                <input type="text" name="taskTitle" id="taskTitle" 
+                placeholder='Title'
+                required/>
+                <textarea rows="5" placeholder="Description"
+                required></textarea>
+                <div className="buttonsContainer">
+                    <button type="button" onClick={handleCancel}>Cancel</button>
+                    <button>Add</button>
+                </div>
             </form>
         </div>
     )

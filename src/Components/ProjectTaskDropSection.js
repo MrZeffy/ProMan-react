@@ -2,7 +2,7 @@ import {useState} from 'react'
 import './ProjectTaskDropSection.css'
 import AddNewTaskForm from './AddNewTaskForm'
 
-const ProjectTaskDropSection = ({ id, heading, taskCount, tasks, setNewTask }) => {
+const ProjectTaskDropSection = ({ id, heading, taskCount, tasks, addNewTask }) => {
 
     const [showAddForm, setshowAddForm] = useState(false)
     
@@ -13,7 +13,7 @@ const ProjectTaskDropSection = ({ id, heading, taskCount, tasks, setNewTask }) =
 
     return (
         <>
-        {(showAddForm)?<AddNewTaskForm id={id}/>:''}
+        {(showAddForm)?<AddNewTaskForm id={id} setshowAddForm={setshowAddForm} addNewTask={addNewTask}/>:''}
 
         <div className="projectDropSection">
             <div className="projectSectionDetailsContainer">
