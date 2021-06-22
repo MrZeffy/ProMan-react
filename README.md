@@ -23,5 +23,8 @@ and then run the app using
 
 `npm start`
 
+## To build for deployment
+
+`npm build`
 
 ## Backend : Under Developement!!
