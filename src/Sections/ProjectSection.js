@@ -13,6 +13,7 @@ import ExpandMoreOutlinedIcon from '@material-ui/icons/ExpandMoreOutlined';
 
 
 
+
 const projectSectionHeadings = ['To do', 'In progress', 'Completed'];
 
 const ProjectSection = ({ setActiveMenuItem, item }) => {

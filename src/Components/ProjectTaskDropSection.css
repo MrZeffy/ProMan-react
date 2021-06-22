@@ -1,5 +1,5 @@
 .projectDropSection{
-    height: 100px;
+    /* height: 100px; */
     width: 100%;
     margin: 10px;
     background-color: var(--drop-section-back);
@@ -7,8 +7,25 @@
     padding: calc(var(--outside-padding) / 4);
     display: flex;
     flex-direction: column;
+    /* justify-content: center; */
+    max-height: 80vh;
+    overflow-x: scroll;
+    /* scrollbar-width: none; */
 
 }
+
+
+.projectDropSection::-webkit-scrollbar {
+  /* width: 6px;
+  background-color: #F5F5F5;  */
+  display: none;
+}
+
+/* .projectDropSection::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+  background-color: var(--blue-color); } */
 
 .projectDropSection > div{
     margin-bottom: 15px;
@@ -32,7 +49,6 @@
 }
 
 
-
 .addButtonContainer button{
     width: 100%;
     border: none;
@@ -44,3 +60,34 @@
     cursor: pointer;
 }
 
+
+.taskContainer{
+    background-color: white;
+    border-radius: 10px;
+    padding: calc(var(--outside-padding) / 4);
+}
+
+.taskContainer h5{
+    font-size: 1.2em;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.taskContainer .headingDot{    
+    font-size: 0.4rem;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.taskContainer .taskDescriptionText{
+    color: #555;
+}
+
+
+.taskContainer .taskProjectText{
+    color: grey;
+    font-style: italic;
+    text-align: end;
+    font-size: 0.8em;
+}
