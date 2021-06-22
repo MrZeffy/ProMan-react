@@ -26,10 +26,13 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
     const [tasks, setTasks] = useState([[], [], []]);
 
     const addNewTask = (task, id)=>{
+        console.log('updating task list')
         const alreadyExisting = tasks;
         alreadyExisting[id].push(task);
         setTasks(alreadyExisting);
+        console.log(alreadyExisting)
     }
+
 
     return (
         <>
@@ -49,7 +52,7 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
                         return (
                             <ProjectTaskDropSection key={index} 
                             id={index}
-                            heading={heading} taskCount={tasks[index].length} 
+                            heading={heading} 
                             tasks={tasks[index]}
                             addNewTask={addNewTask} 
                             />

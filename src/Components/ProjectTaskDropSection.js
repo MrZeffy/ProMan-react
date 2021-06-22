@@ -2,8 +2,9 @@ import {useState} from 'react'
 import './ProjectTaskDropSection.css'
 import AddNewTaskForm from './AddNewTaskForm'
 
-const ProjectTaskDropSection = ({ id, heading, taskCount, tasks, addNewTask }) => {
+const ProjectTaskDropSection = ({ id, heading, tasks, addNewTask }) => {
 
+    const taskCount = tasks.length;
     const [showAddForm, setshowAddForm] = useState(false)
     
     const handleNewButtonClick = ()=>{

@@ -1,27 +1,54 @@
-import React from 'react'
+import {useState} from 'react'
 import './AddNewTaskForm.css'
+import {v4 as uuid} from 'uuid';
 
 
 
 
 
+const AddNewTaskForm = ({id, setshowAddForm, addNewTask}) => {
+    
 
-const AddNewTaskForm = ({id, setshowAddForm}) => {
+
+    const [title, settitle] = useState('')
+
+    const [description, setdescription] = useState('')
+
+    const [project, setproject] = useState('')
+
     
 
     const handleCancel = ()=>{
         setshowAddForm(false);
     }
 
+    const handleSubmit = (event)=>{
+        handleCancel();
+        addNewTask({
+            taskId: uuid(),
+            taskTitle: title,
+            taskDescription: description,
+            taskProject: project
+        }, id);
+        
+        event.preventDefault();
+    }
+
+    const handleChange = (event, invoke)=>{
+        invoke(event.target.value)
+    }
+
 
     return (
         <div className="formContainer">
-            <form className="ourForm" autoComplete="off">
+            <form className="ourForm" autoComplete="off"
+            onSubmit={handleSubmit}>
                 
                 <h2>Enter task details</h2>
                 <input name="projectSelected" id="projectSelected" list="projectSelectedList"
                     placeholder="Select Project" 
-                    required/>
+                    required
+                    onChange={(event)=>{handleChange(event, setproject)}}/>
                 <datalist id="projectSelectedList">
                     <option value="blah"></option>
                     <option value="blah" />
@@ -30,9 +57,11 @@ const AddNewTaskForm = ({id, setshowAddForm}) => {
                 </datalist>
                 <input type="text" name="taskTitle" id="taskTitle" 
                 placeholder='Title'
-                required/>
+                required
+                    onChange={(event) => { handleChange(event, settitle) }}/>
                 <textarea rows="5" placeholder="Description"
-                required></textarea>
+                required
+                    onChange={(event) => { handleChange(event, setdescription) }}></textarea>
                 <div className="buttonsContainer">
                     <button type="button" onClick={handleCancel}>Cancel</button>
                     <button>Add</button>
