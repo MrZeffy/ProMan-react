@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import { useState } from 'react'
 import './ProjectSection.css'
 import { useEffect } from 'react';
 
@@ -13,41 +13,52 @@ import ExpandMoreOutlinedIcon from '@material-ui/icons/ExpandMoreOutlined';
 
 
 
-const projectSectionHeadings = [ 'To do', 'In progress', 'Completed' ];
+const projectSectionHeadings = ['To do', 'In progress', 'Completed'];
 
-const ProjectSection = ({setActiveMenuItem, item}) => {
-    
+const ProjectSection = ({ setActiveMenuItem, item }) => {
+
     useEffect(() => {
         console.log(item);
         setActiveMenuItem(item);
-        
+
     })
-    const [taskCount, setTaskCount] = useState([0,0,0]);
-    const [tasks, setTasks] = useState([[], [], []]);
     
+    const [tasks, setTasks] = useState([[], [], []]);
+
+    const addNewTask = (task, id)=>{
+        const alreadyExisting = tasks;
+        alreadyExisting[id].push(task);
+        setTasks(alreadyExisting);
+    }
+
     return (
         <>
-        <div className="projectSectionContainer">
-            <div className="headingSection">
-                <div className="headingContainer">
-                    <h2>Projects</h2>
+            <div className="projectSectionContainer">
+                <div className="headingSection">
+                    <div className="headingContainer">
+                        <h2>Projects</h2>
+                    </div>
+                    <div className="filterContainer">
+                        <h3>All </h3>
+                        <ExpandMoreOutlinedIcon />
+                    </div>
                 </div>
-                <div className="filterContainer">
-                    <h3>All </h3>
-                    <ExpandMoreOutlinedIcon />
+
+                <div className="dropperSectionContainer">
+                    {projectSectionHeadings.map((heading, index) => {
+                        return (
+                            <ProjectTaskDropSection key={index} 
+                            id={index}
+                            heading={heading} taskCount={tasks[index].length} 
+                            tasks={tasks[index]}
+                            addNewTask={addNewTask} 
+                            />
+                        )
+                    })}
                 </div>
+
+
             </div>
-
-            <div className="dropperSectionContainer">                
-                {projectSectionHeadings.map((heading, index)=>{
-                    return (
-                        <ProjectTaskDropSection key={index} heading={heading} taskCount={taskCount[index]} tasks={tasks[index]}/>
-                    )
-                })}
-            </div>
-
-
-        </div>
         </>
     )
 }
