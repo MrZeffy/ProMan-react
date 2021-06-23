@@ -1,17 +1,45 @@
-import {useEffect} from 'react'
 
-const TimeTracker = ({ setActiveMenuItem, item }) => {
+import React from 'react'
+import './timeTracker.css'
 
+
+/*const projects = {
+    allProjects: []
+};
+class Project {
+    constructor(id, title) {
+      this.id = id;
+      this.title = title;
+    }
+  }
+
+const newProject = new Project(ID, title);
+projects.allProjects.push(newProject);*/
+
+
+
+const timeTracker = () => {
+  
     useEffect(() => {
         console.log(item);
         setActiveMenuItem(item);
 
     })
+  
     return (
-        <div>
-            
-        </div>
+        <>
+
+            <form className="timeTrackerForm">
+                <input placeholder="what are you working on"></input>
+                <input type="submit" value="Submit"></input>
+            </form>
+
+
+            <ul className="projectslist">
+            </ul>
+
+        </>
     )
 }
 
-export default TimeTracker
+export default timeTracker

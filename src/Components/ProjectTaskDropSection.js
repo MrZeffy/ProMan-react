@@ -8,7 +8,9 @@ import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 
 
 
-const ProjectTaskDropSection = ({ id, heading, tasks, addNewTask }) => {
+
+const ProjectTaskDropSection = ({ id, heading, tasks, addNewTask, projects }) => {
+
 
     const taskCount = tasks.length;
     const [showAddForm, setshowAddForm] = useState(false)
@@ -19,17 +21,11 @@ const ProjectTaskDropSection = ({ id, heading, tasks, addNewTask }) => {
     }
 
 
-    const returnRandomColorStyle = () => ({
-        color: `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`
+
+    const returnColorStyle = (projectName) => ({
+        color: projects[projectName]
     })
 
-
-    const currentTask = {
-        taskId: 'dsafas',
-        taskTitle: 'Dummy',
-        taskDescription: 'description',
-        taskProject: 'project'
-    };
 
     return (
         <>
@@ -50,8 +46,9 @@ const ProjectTaskDropSection = ({ id, heading, tasks, addNewTask }) => {
 
                 
                 {tasks.map((currentTask)=>(
-                    <div className="taskContainer" draggable>
-                        <h5><FiberManualRecordIcon style={returnRandomColorStyle()} className="headingDot" />{currentTask.taskTitle}</h5>
+
+                    <div className="taskContainer" key={currentTask.taskId} draggable>
+                        <h5><FiberManualRecordIcon style={returnColorStyle(currentTask.taskProject)} className="headingDot" />{currentTask.taskTitle}</h5>
                         <p className="taskDescriptionText">{currentTask.taskDescription}</p>
                         <p className="taskProjectText">{currentTask.taskProject}</p>
                     </div>
