@@ -1,3 +1,4 @@
+
 import React from 'react'
 import './timeTracker.css'
 
@@ -18,6 +19,13 @@ projects.allProjects.push(newProject);*/
 
 
 const timeTracker = () => {
+  
+    useEffect(() => {
+        console.log(item);
+        setActiveMenuItem(item);
+
+    })
+  
     return (
         <>
 

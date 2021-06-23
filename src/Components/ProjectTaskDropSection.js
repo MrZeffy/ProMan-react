@@ -8,7 +8,9 @@ import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 
 
 
+
 const ProjectTaskDropSection = ({ id, heading, tasks, addNewTask, projects }) => {
+
 
     const taskCount = tasks.length;
     const [showAddForm, setshowAddForm] = useState(false)
@@ -17,6 +19,7 @@ const ProjectTaskDropSection = ({ id, heading, tasks, addNewTask, projects }) =>
         setshowAddForm(true)
         console.log('set to true')
     }
+
 
 
     const returnColorStyle = (projectName) => ({
@@ -43,6 +46,7 @@ const ProjectTaskDropSection = ({ id, heading, tasks, addNewTask, projects }) =>
 
                 
                 {tasks.map((currentTask)=>(
+
                     <div className="taskContainer" key={currentTask.taskId} draggable>
                         <h5><FiberManualRecordIcon style={returnColorStyle(currentTask.taskProject)} className="headingDot" />{currentTask.taskTitle}</h5>
                         <p className="taskDescriptionText">{currentTask.taskDescription}</p>

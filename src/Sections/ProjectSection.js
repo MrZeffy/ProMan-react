@@ -26,6 +26,7 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
     
     const [tasks, setTasks] = useState([[], [], []]);
 
+
     const [projects, setProjects] = useState({});
 
     const addNewTask = (task, id)=>{
@@ -46,6 +47,7 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
         setTasks(alreadyExisting);
         console.log(alreadyExisting)
         console.log(projects);
+
     }
 
 
@@ -69,7 +71,9 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
                             id={index}
                             heading={heading} 
                             tasks={tasks[index]}
+
                             projects={projects}
+
                             addNewTask={addNewTask} 
                             />
                         )
