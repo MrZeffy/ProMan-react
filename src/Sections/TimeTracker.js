@@ -21,7 +21,7 @@ const timeTracker = () => {
     return (
         <>
 
-            <form>
+            <form className="timeTrackerForm">
                 <input placeholder="what are you working on"></input>
                 <input type="submit" value="Submit"></input>
             </form>
