@@ -26,12 +26,26 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
     
     const [tasks, setTasks] = useState([[], [], []]);
 
+    const [projects, setProjects] = useState({});
+
     const addNewTask = (task, id)=>{
-        console.log('updating task list')
+        // console.log('updating task list')
         const alreadyExisting = tasks;
+
+
+
+        const oldProjects = projects;
+
+        if(!oldProjects[task.taskProject]){
+            oldProjects[task.taskProject] = `rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`
+            setProjects(oldProjects);
+        }
+        
+        
         alreadyExisting[id].push(task);
         setTasks(alreadyExisting);
         console.log(alreadyExisting)
+        console.log(projects);
     }
 
 
@@ -55,6 +69,7 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
                             id={index}
                             heading={heading} 
                             tasks={tasks[index]}
+                            projects={projects}
                             addNewTask={addNewTask} 
                             />
                         )
