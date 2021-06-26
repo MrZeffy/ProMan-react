@@ -31,6 +31,8 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
     
     const [tasks, setTasks] = useState([[], [], []]);
 
+    const [currentFilter, setcurrentFilter] = useState(null);
+
 
     const [projects, setProjects] = useState({});
 
@@ -60,7 +62,11 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
         <>
             <div className="projectSectionContainer">
                 
-                <TopBar showFilterMenu={showFilterMenu} setshowFilterMenu={setshowFilterMenu} projects={projects}/>
+                <TopBar showFilterMenu={showFilterMenu} 
+                setshowFilterMenu={setshowFilterMenu} 
+                projects={projects}
+                setcurrentFilter={setcurrentFilter}
+                currentFilter={currentFilter}/>
 
 
                 <div className="dropperSectionContainer">
@@ -74,6 +80,7 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
                             projects={projects}
 
                             addNewTask={addNewTask} 
+                            currentFilter={currentFilter}
                             />
                         )
                     })}
