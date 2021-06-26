@@ -5,11 +5,13 @@ import { useEffect } from 'react';
 
 // Componenets
 
+import TopBar from '../Components/TopBar';
 import ProjectTaskDropSection from '../Components/ProjectTaskDropSection';
+
 
 // Icons
 
-import ExpandMoreOutlinedIcon from '@material-ui/icons/ExpandMoreOutlined';
+
 
 
 
@@ -19,10 +21,13 @@ const projectSectionHeadings = ['To do', 'In progress', 'Completed'];
 const ProjectSection = ({ setActiveMenuItem, item }) => {
 
     useEffect(() => {
-        console.log(item);
+        
         setActiveMenuItem(item);
 
     })
+
+
+    const [showFilterMenu, setshowFilterMenu] = useState(false)
     
     const [tasks, setTasks] = useState([[], [], []]);
 
@@ -54,15 +59,9 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
     return (
         <>
             <div className="projectSectionContainer">
-                <div className="headingSection">
-                    <div className="headingContainer">
-                        <h2>Projects</h2>
-                    </div>
-                    <div className="filterContainer">
-                        <h3>All </h3>
-                        <ExpandMoreOutlinedIcon />
-                    </div>
-                </div>
+                
+                <TopBar showFilterMenu={showFilterMenu} setshowFilterMenu={setshowFilterMenu} projects={projects}/>
+
 
                 <div className="dropperSectionContainer">
                     {projectSectionHeadings.map((heading, index) => {

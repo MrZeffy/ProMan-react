@@ -1,5 +1,5 @@
 
-import React from 'react'
+import {useEffect} from 'react'
 import './timeTracker.css'
 
 
@@ -18,7 +18,7 @@ projects.allProjects.push(newProject);*/
 
 
 
-const timeTracker = () => {
+const TimeTracker = ({setActiveMenuItem, item}) => {
   
     useEffect(() => {
         console.log(item);
@@ -42,4 +42,4 @@ const timeTracker = () => {
     )
 }
 
-export default timeTracker
+export default TimeTracker
