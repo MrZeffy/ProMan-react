@@ -3,6 +3,9 @@ import './ProjectSection.css'
 import { useEffect } from 'react';
 
 
+import { v4 as uuid} from 'uuid';
+
+
 // Componenets
 
 import TopBar from '../Components/TopBar';
@@ -27,6 +30,9 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
     })
 
 
+    
+
+
     const [showFilterMenu, setshowFilterMenu] = useState(false)
     
     const [tasks, setTasks] = useState([[], [], []]);
@@ -36,10 +42,16 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
 
     const [projects, setProjects] = useState({});
 
+
+    useEffect(() => {
+        console.log(tasks)
+    }, [tasks])
+
     const addNewTask = (task, id)=>{
         // console.log('updating task list')
         const alreadyExisting = tasks;
 
+        task['taskId'] = uuid();
 
 
         const oldProjects = projects;
@@ -55,6 +67,28 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
         console.log(alreadyExisting)
         console.log(projects);
 
+    }
+
+    const updateTaskCategory = (id, oldCatInd, newCatInd)=>{
+
+
+        const oldTask = [...tasks];
+
+        console.log("Update task function")
+
+        console.log(JSON.parse(JSON.stringify(oldTask)));
+        const taskToMove = oldTask[oldCatInd].find((ele)=>ele.taskId===id);
+        console.log("After find")
+        console.log(JSON.parse(JSON.stringify(oldTask)));
+        oldTask[newCatInd].push(taskToMove);
+        console.log("After push")
+        console.log(JSON.parse(JSON.stringify(oldTask)));
+        oldTask[oldCatInd] = oldTask[oldCatInd].filter((ele)=>(!(ele.taskId===id)))
+        console.log(oldTask[oldCatInd]);
+        console.log(JSON.parse(JSON.stringify(oldTask)));
+        
+        setTasks(oldTask);
+        
     }
 
 
@@ -75,12 +109,13 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
                             <ProjectTaskDropSection key={index} 
                             id={index}
                             heading={heading} 
-                            tasks={tasks[index]}
+                            tasks={tasks}
 
                             projects={projects}
 
                             addNewTask={addNewTask} 
                             currentFilter={currentFilter}
+                            updateTaskCategory={updateTaskCategory}
                             />
                         )
                     })}
