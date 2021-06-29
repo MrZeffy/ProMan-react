@@ -1,7 +1,8 @@
 import ExpandMoreOutlinedIcon from '@material-ui/icons/ExpandMoreOutlined';
 
 
-const TopBar = ({projects, showFilterMenu, setshowFilterMenu}) => {
+const TopBar = ({projects, showFilterMenu, setshowFilterMenu, setcurrentFilter,
+                currentFilter}) => {
     return (
         <div className="headingSection">
             <div className="headingContainer">
@@ -12,15 +13,25 @@ const TopBar = ({projects, showFilterMenu, setshowFilterMenu}) => {
                 <button type="button" className="buttonForFilter"
                     onClick={() => setshowFilterMenu(!showFilterMenu)}
                     onBlur={() => setshowFilterMenu(false)}>
-                    <h3>All </h3>
+                    <h3>{(currentFilter)?currentFilter:'All'} </h3>
                     <ExpandMoreOutlinedIcon className={`filterIcon ${(showFilterMenu) ? 'rotateFilter' : ''}`} />
 
                     <div
                         className={`filterMenuContainer ${(showFilterMenu) ? 'filterMenuContainerActive' : ''}`}>
                         <ul>
+                            <li onClick={()=>{
+                                setcurrentFilter(null)
+                                setshowFilterMenu(false);
+                            }}>All</li>
                             {Object.keys(projects).map((ele) => {
                                 return (
-                                    <li>{ele}</li>
+                                    <li
+                                    key={ele}
+                                    onClick={()=>{
+                                        setcurrentFilter(ele);
+                                        setshowFilterMenu(false);
+                                    }}
+                                    >{ele}</li>
                                 )
                             })}
                         </ul>
