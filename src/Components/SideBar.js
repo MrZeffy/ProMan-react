@@ -68,7 +68,7 @@ const SideBar = ({activeMenuItem, setActiveMenuItem}) => {
 
 
     const updateActive = (index) => {
-        console.log(index)
+        
         setActiveMenuItem(index);
     }
 

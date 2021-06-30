@@ -61,18 +61,54 @@
 }
 
 
+
+
+
 .taskContainer{
     background-color: white;
     border-radius: 10px;
     padding: calc(var(--outside-padding) / 4);
 }
 
-.taskContainer h5{
+
+
+.taskContainer .headingAndButtonsContainer{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+
+
+
+.taskContainer .headingAndButtonsContainer h5{
     font-size: 1.2em;
     margin: 0;
     display: flex;
     align-items: center;
 }
+
+
+
+.headingAndButtonsContainer .modifyButtons{
+    margin-left: auto;
+}
+
+
+.headingAndButtonsContainer .modifyButtons button{
+    background: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0 5px;
+
+}
+
+.modifyButtons .modifyButtonIcons{
+    font-size: 1.3rem;
+}
+
 
 .taskContainer .headingDot{    
     font-size: 0.4rem;

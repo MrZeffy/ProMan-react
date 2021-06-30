@@ -44,11 +44,11 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
 
 
     useEffect(() => {
-        console.log(tasks)
+        
     }, [tasks])
 
     const addNewTask = (task, id)=>{
-        // console.log('updating task list')
+        // 'updating task list')
         const alreadyExisting = tasks;
 
         task['taskId'] = uuid();
@@ -64,31 +64,34 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
         
         alreadyExisting[id].push(task);
         setTasks(alreadyExisting);
-        console.log(alreadyExisting)
-        console.log(projects);
-
+        
     }
 
     const updateTaskCategory = (id, oldCatInd, newCatInd)=>{
-
-
         const oldTask = [...tasks];
-
-        console.log("Update task function")
-
-        console.log(JSON.parse(JSON.stringify(oldTask)));
-        const taskToMove = oldTask[oldCatInd].find((ele)=>ele.taskId===id);
-        console.log("After find")
-        console.log(JSON.parse(JSON.stringify(oldTask)));
+        const taskToMove = oldTask[oldCatInd].find((ele)=>ele.taskId===id);        
+        
         oldTask[newCatInd].push(taskToMove);
-        console.log("After push")
-        console.log(JSON.parse(JSON.stringify(oldTask)));
         oldTask[oldCatInd] = oldTask[oldCatInd].filter((ele)=>(!(ele.taskId===id)))
-        console.log(oldTask[oldCatInd]);
-        console.log(JSON.parse(JSON.stringify(oldTask)));
         
         setTasks(oldTask);
+    }
+
+
+    const deleteTask = (taskId, catInd)=>{
+        const oldTasks = [...tasks];
+
+        console.log(taskId, catInd)
         
+        console.log(JSON.parse(JSON.stringify(oldTasks)))
+
+        oldTasks[catInd] = oldTasks[catInd].filter((ele)=>(
+            (ele.taskId !== taskId)
+        ));
+
+        console.log(JSON.parse(JSON.stringify(oldTasks)))
+
+        setTasks(oldTasks);
     }
 
 
@@ -116,6 +119,7 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
                             addNewTask={addNewTask} 
                             currentFilter={currentFilter}
                             updateTaskCategory={updateTaskCategory}
+                            deleteTask = {deleteTask}
                             />
                         )
                     })}
