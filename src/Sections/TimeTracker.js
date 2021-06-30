@@ -21,7 +21,7 @@ projects.allProjects.push(newProject);*/
 const TimeTracker = ({setActiveMenuItem, item}) => {
   
     useEffect(() => {
-        console.log(item);
+        
         setActiveMenuItem(item);
 
     })
