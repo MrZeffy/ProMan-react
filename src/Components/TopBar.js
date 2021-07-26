@@ -1,8 +1,15 @@
 import ExpandMoreOutlinedIcon from '@material-ui/icons/ExpandMoreOutlined';
-
+import { useEffect } from 'react';
 
 const TopBar = ({projects, showFilterMenu, setshowFilterMenu, setcurrentFilter,
                 currentFilter}) => {
+
+    useEffect(() => {
+        console.log(projects);
+        return () => {
+            
+        }
+    },[projects]);
     return (
         <div className="headingSection">
             <div className="headingContainer">

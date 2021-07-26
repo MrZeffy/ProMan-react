@@ -26,9 +26,10 @@ const ProjectTaskDropSection = ({ id, heading, tasks, addNewTask, projects, curr
 
 
 
-    const returnColorStyle = (projectName) => ({
-        color: projects[projectName]
-    })
+    const returnColorStyle = (projectName) => {        
+        return {
+        color: projects[projectName][0]
+    }}
 
     const handleDrag = (e)=>{
         e.preventDefault();

@@ -67,9 +67,12 @@
 .taskContainer{
     background-color: white;
     border-radius: 10px;
-    padding: calc(var(--outside-padding) / 4);
+    padding: calc(var(--outside-padding) / 4);    
 }
 
+.taskContainer:active{
+    cursor: grabbing;
+}
 
 
 .taskContainer .headingAndButtonsContainer{
@@ -107,8 +110,13 @@
 
 .modifyButtons .modifyButtonIcons{
     font-size: 1.3rem;
+    color: #555;
+    transition: 0.2s all ease-in-out;
 }
 
+.modifyButtons .modifyButtonIcons:hover{
+    color: black;
+}
 
 .taskContainer .headingDot{    
     font-size: 0.4rem;

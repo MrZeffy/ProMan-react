@@ -12,13 +12,6 @@ import TopBar from '../Components/TopBar';
 import ProjectTaskDropSection from '../Components/ProjectTaskDropSection';
 
 
-// Icons
-
-
-
-
-
-
 const projectSectionHeadings = ['To do', 'In progress', 'Completed'];
 
 const ProjectSection = ({ setActiveMenuItem, item }) => {
@@ -28,10 +21,6 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
         setActiveMenuItem(item);
 
     })
-
-
-    
-
 
     const [showFilterMenu, setshowFilterMenu] = useState(false)
     
@@ -51,13 +40,15 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
         // 'updating task list')
         const alreadyExisting = tasks;
 
+        
+
         task['taskId'] = uuid();
 
 
         const oldProjects = projects;
 
         if(!oldProjects[task.taskProject]){
-            oldProjects[task.taskProject] = `rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`
+            oldProjects[task.taskProject] = [`rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`, 1]
             setProjects(oldProjects);
         }
         
@@ -80,20 +71,30 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
 
     const deleteTask = (taskId, catInd)=>{
         const oldTasks = [...tasks];
+        let taskToRemove = null;
+        oldTasks[catInd] = oldTasks[catInd].filter((ele)=>{
+            if(ele.taskId === taskId){
+                taskToRemove = ele;
+            }
+            return (ele.taskId !== taskId)
+        });
 
-        console.log(taskId, catInd)
-        
-        console.log(JSON.parse(JSON.stringify(oldTasks)))
+        let updatedProject = {...projects};
 
-        oldTasks[catInd] = oldTasks[catInd].filter((ele)=>(
-            (ele.taskId !== taskId)
-        ));
 
-        console.log(JSON.parse(JSON.stringify(oldTasks)))
+
+        updatedProject[taskToRemove.taskProject][1] -= 1;
+
+        if (updatedProject[taskToRemove.taskProject][1] === 0){
+            delete updatedProject[taskToRemove.taskProject];
+        }
+
+        setProjects(updatedProject);
+
+
 
         setTasks(oldTasks);
     }
-
 
     return (
         <>
