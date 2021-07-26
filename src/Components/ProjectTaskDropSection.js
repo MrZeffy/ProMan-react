@@ -7,10 +7,6 @@ import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 
-
-
-
-
 const ProjectTaskDropSection = ({ id, heading, tasks, addNewTask, projects, currentFilter, updateTaskCategory, deleteTask }) => {
 
 
@@ -23,7 +19,6 @@ const ProjectTaskDropSection = ({ id, heading, tasks, addNewTask, projects, curr
         setshowAddForm(true)
         
     }
-
 
 
     const returnColorStyle = (projectName) => {        
@@ -74,11 +69,10 @@ const ProjectTaskDropSection = ({ id, heading, tasks, addNewTask, projects, curr
                 </div>
 
                 
-                {tasks.filter((currentTask)=>{
-                    
-                    return (currentTask.taskProject === currentFilter || currentFilter === null);
-                }).map((currentTask)=>(
-                    
+                {tasks.filter((currentTask)=>
+                (currentTask.taskProject === currentFilter 
+                    || currentFilter === null))
+                .map((currentTask)=>(
                     <div className="taskContainer" key={currentTask.taskId} draggable
                     onDragStart={(e)=>handleDragStart(e, currentTask.taskId)}>
                         

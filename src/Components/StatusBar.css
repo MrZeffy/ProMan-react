@@ -1,0 +1,32 @@
+.statusBarContainer{
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+
+.statusContainer {
+    display: flex;
+    align-items: center;
+}
+
+
+.userOptionsContainer{
+    display: flex;
+}
+
+.statusContainer > div{
+    margin: 0 7px;
+}
+
+
+.userImage{
+
+    max-width: 45px;
+}
+
+.userImage img{
+    width: 100%;
+}
+
+

@@ -10,6 +10,7 @@ import { v4 as uuid} from 'uuid';
 
 import TopBar from '../Components/TopBar';
 import ProjectTaskDropSection from '../Components/ProjectTaskDropSection';
+import StatusBar from '../Components/StatusBar';
 
 
 const projectSectionHeadings = ['To do', 'In progress', 'Completed'];
@@ -48,7 +49,11 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
         const oldProjects = projects;
 
         if(!oldProjects[task.taskProject]){
-            oldProjects[task.taskProject] = [`rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`, 1]
+            oldProjects[task.taskProject] = [`
+            rgb(${Math.floor(Math.random() * 255)}, 
+            ${Math.floor(Math.random() * 255)}, 
+            ${Math.floor(Math.random() * 255)})`
+            , 1]
             
         }else{
             oldProjects[task.taskProject][1] += 1;
@@ -103,7 +108,7 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
     return (
         <>
             <div className="projectSectionContainer">
-                
+                <StatusBar/>
                 <TopBar showFilterMenu={showFilterMenu} 
                 setshowFilterMenu={setshowFilterMenu} 
                 projects={projects}
