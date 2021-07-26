@@ -8,6 +8,7 @@
     display: flex;
     flex-direction: column;
     /* justify-content: center; */
+    min-height: 35vh;
     max-height: 80vh;
     overflow-x: scroll;
     /* scrollbar-width: none; */

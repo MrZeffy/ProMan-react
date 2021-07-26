@@ -49,8 +49,12 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
 
         if(!oldProjects[task.taskProject]){
             oldProjects[task.taskProject] = [`rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`, 1]
-            setProjects(oldProjects);
+            
+        }else{
+            oldProjects[task.taskProject][1] += 1;
         }
+
+        setProjects(oldProjects);
         
         
         alreadyExisting[id].push(task);
