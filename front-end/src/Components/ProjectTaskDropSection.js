@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './ProjectTaskDropSection.css'
 import AddNewTaskForm from './AddNewTaskForm'
 
@@ -12,6 +12,15 @@ const ProjectTaskDropSection = ({ id, heading, tasks, addNewTask, projects, curr
 
     tasks = tasks[id];
 
+    const [fillData, setfillData] = useState(null);
+
+
+    useEffect(() => {
+        setfillData(null)
+        
+    }, [fillData])
+
+
     const taskCount = tasks.length;
     const [showAddForm, setshowAddForm] = useState(false)
 
@@ -19,6 +28,8 @@ const ProjectTaskDropSection = ({ id, heading, tasks, addNewTask, projects, curr
         setshowAddForm(true)
         
     }
+
+
 
 
     const returnColorStyle = (projectName) => {        
@@ -52,7 +63,7 @@ const ProjectTaskDropSection = ({ id, heading, tasks, addNewTask, projects, curr
     }
     return (
         <>
-            {(showAddForm) ? <AddNewTaskForm id={id} setshowAddForm={setshowAddForm} addNewTask={addNewTask} /> : ''}
+            {(showAddForm) ? <AddNewTaskForm id={id} setshowAddForm={setshowAddForm} addNewTask={addNewTask} fillData={fillData} setfillData={setfillData}/> : ''}
 
             <div className="projectDropSection" onDragOver={(e)=>handleDrag(e)}
             onDrop={(e)=>handleDropEvent(e)}>
@@ -86,11 +97,13 @@ const ProjectTaskDropSection = ({ id, heading, tasks, addNewTask, projects, curr
                                 </h5>
                             </div>
                             <div className="modifyButtons">
-                                <button>
+                                <button onClick={()=>{
+                                    setfillData(currentTask);
+                                    setshowAddForm(true);
+                                }}>
                                     <span title="Edit"><EditOutlinedIcon className="modifyButtonIcons" /></span>
                                 </button>
                                 <button onClick={()=>{
-                                    console.log("Working");
                                     deleteTask(currentTask.taskId, id)
                                 }}>
                                     <span title="Delete"><DeleteOutlineIcon className="modifyButtonIcons" /></span>
@@ -100,13 +113,11 @@ const ProjectTaskDropSection = ({ id, heading, tasks, addNewTask, projects, curr
                             
                         </div>
 
-                        
                         <p className="taskDescriptionText">{currentTask.taskDescription}</p>
                         <p className="taskProjectText">{currentTask.taskProject}</p>
                     </div>
                 ))}
 
-                
             </div>
         </>
     )

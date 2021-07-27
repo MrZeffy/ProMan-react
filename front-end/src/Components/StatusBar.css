@@ -17,6 +17,7 @@
 
 .statusContainer > div{
     margin: 0 7px;
+    cursor: pointer;
 }
 
 

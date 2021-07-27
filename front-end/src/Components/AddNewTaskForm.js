@@ -6,16 +6,27 @@ import {v4 as uuid} from 'uuid';
 
 
 
-const AddNewTaskForm = ({id, setshowAddForm, addNewTask}) => {
+const AddNewTaskForm = ({id, setshowAddForm, addNewTask, fillData, setfillData}) => {
     
 
+    console.log("check ", fillData)
 
-    const [title, settitle] = useState('')
 
-    const [description, setdescription] = useState('')
+    let intialTitle = ''
+    let initialDescription = ''
+    let initialProject = ''
 
-    const [project, setproject] = useState('')
+    if(fillData !== null){
+        intialTitle = fillData.taskTitle;
+        initialDescription = fillData.taskDescription
+        initialProject = fillData.taskProject
+    }
 
+    const [title, settitle] = useState(intialTitle)
+
+    const [description, setdescription] = useState(initialDescription)
+
+    const [project, setproject] = useState(initialProject)
     
 
     const handleCancel = ()=>{
@@ -31,8 +42,11 @@ const AddNewTaskForm = ({id, setshowAddForm, addNewTask}) => {
             taskProject: project
         }, id);
         
+        
         event.preventDefault();
     }
+
+    
 
     const handleChange = (event, invoke)=>{
         invoke(event.target.value)
@@ -47,6 +61,7 @@ const AddNewTaskForm = ({id, setshowAddForm, addNewTask}) => {
                 <h2>Enter task details</h2>
                 <input name="projectSelected" id="projectSelected" list="projectSelectedList"
                     placeholder="Select Project" 
+                    value={project}
                     required
                     onChange={(event)=>{handleChange(event, setproject)}}/>
                 <datalist id="projectSelectedList">
@@ -57,9 +72,11 @@ const AddNewTaskForm = ({id, setshowAddForm, addNewTask}) => {
                 </datalist>
                 <input type="text" name="taskTitle" id="taskTitle" 
                 placeholder='Title'
+                    value={title}
                 required
                     onChange={(event) => { handleChange(event, settitle) }}/>
                 <textarea rows="5" placeholder="Description"
+                    value={description}
                 required
                     onChange={(event) => { handleChange(event, setdescription) }}></textarea>
                 <div className="buttonsContainer">
