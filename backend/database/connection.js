@@ -56,7 +56,36 @@ const setupSchema = async () => {
             user_id VARCHAR(100) PRIMARY KEY,
             username VARCHAR(30) NOT NULL UNIQUE,
             password VARCHAR(100) NOT NULL
+        );`);
+        await executeQuery(`CREATE TABLE IF NOT EXISTS projects (
+            project_id VARCHAR(100) PRIMARY KEY,
+            project_name VARCHAR(50) NOT NULL
+        );`);
+        await executeQuery(`CREATE TABLE IF NOT EXISTS tasks (
+            task_id VARCHAR(100) PRIMARY KEY,
+            task_title VARCHAR(200) NOT NULL,
+            project_id VARCHAR(100) ,
+            FOREIGN KEY(project_id) REFERENCES projects(project_id) ON DELETE CASCADE,
+            task_description TEXT,
+            task_deadline DATE
         );`)
+        await executeQuery(`CREATE TABLE IF NOT EXISTS task_owner (
+            user_id VARCHAR(100),
+            task_id VARCHAR(100),
+            FOREIGN KEY(user_id) REFERENCES user_creds(user_id) ON DELETE CASCADE,
+            FOREIGN KEY(task_id) REFERENCES tasks(task_id) ON DELETE CASCADE,
+            PRIMARY KEY(user_id, task_id)
+        )`);
+        await executeQuery(`CREATE TABLE IF NOT EXISTS task_access (
+            user_id VARCHAR(100),
+            task_id VARCHAR(100),
+            date_assigned DATE,
+            FOREIGN KEY(task_id) REFERENCES tasks(task_id) ON DELETE CASCADE,
+            FOREIGN KEY(user_id) REFERENCES user_creds(user_id) ON DELETE CASCADE,
+            PRIMARY KEY(user_id, task_id)
+        )`);
+
+
         console.log("SCHEMA SETUP SUCCESSFUL");
 
     }catch(err){
