@@ -54,18 +54,13 @@ const settingMenu = [
         id: 5,
         itemTitle: 'Log Out',
         iconClass: LogoutIcon,
-        link: '/logout'
+        link: '/login'
     }
 ]
 
 
 
 const SideBar = ({activeMenuItem, setActiveMenuItem}) => {
-
-    
-
-    
-
 
     const updateActive = (index) => {
         

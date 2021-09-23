@@ -1,7 +1,7 @@
 const mysql = require('mysql');
 const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
-const { use } = require('passport');
+
 
 const saltRounds = 1;
 
@@ -64,7 +64,8 @@ const setupSchema = async () => {
         await executeQuery(`CREATE TABLE IF NOT EXISTS tasks (
             task_id VARCHAR(100) PRIMARY KEY,
             task_title VARCHAR(200) NOT NULL,
-            project_id VARCHAR(100) ,
+            project_id VARCHAR(100),
+            task_creation_date DATE,
             FOREIGN KEY(project_id) REFERENCES projects(project_id) ON DELETE CASCADE,
             task_description TEXT,
             task_deadline DATE

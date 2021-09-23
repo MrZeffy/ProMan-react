@@ -17,12 +17,6 @@ const projectSectionHeadings = ['To do', 'In progress', 'Completed'];
 
 const ProjectSection = ({ setActiveMenuItem, item }) => {
 
-    useEffect(() => {
-        
-        setActiveMenuItem(item);
-
-    })
-
     const [showFilterMenu, setshowFilterMenu] = useState(false)
     
     const [tasks, setTasks] = useState([[], [], []]);

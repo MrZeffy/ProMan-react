@@ -28,14 +28,17 @@ passport.use(new localStrategy(
 ));
 
 passport.serializeUser((user, done)=>{
+    console.log("Serializing ", user);
     done(null, user['user_id']);
+
 });
 
 passport.deserializeUser(async (id, done)=>{
+    console.log("Deserializing ", id);
     const user = await DBWrapper.findUserById(id);
     done(null, user);
 })
-
+ 
 
 const registerNewUser = async (username, password)=>{
     const user = await DBWrapper.findUser(username)
