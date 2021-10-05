@@ -52,10 +52,14 @@ const setupSchema = async () => {
         await executeQuery(`CREATE DATABASE IF NOT EXISTS pro_man;`);
         await executeQuery('USE pro_man;');
         
+        await executeQuery(`CREATE TABLE IF NOT EXISTS user_info(user_id VARCHAR(100) PRIMARY KEY, name VARCHAR(100) NOT NULL, email VARCHAR(100) UNIQUE NOT NULL);`);
+
         await executeQuery(`CREATE TABLE IF NOT EXISTS user_creds (
-            user_id VARCHAR(100) PRIMARY KEY,
+            user_id VARCHAR(100) PRIMARY KEY ,
             username VARCHAR(30) NOT NULL UNIQUE,
-            password VARCHAR(100) NOT NULL
+            password VARCHAR(100) NOT NULL,
+            FOREIGN KEY(user_id) REFERENCES user_info(user_id) ON DELETE CASCADE
+
         );`);
         await executeQuery(`CREATE TABLE IF NOT EXISTS projects (
             project_id VARCHAR(100) PRIMARY KEY,
@@ -73,7 +77,7 @@ const setupSchema = async () => {
         await executeQuery(`CREATE TABLE IF NOT EXISTS task_owner (
             user_id VARCHAR(100),
             task_id VARCHAR(100),
-            FOREIGN KEY(user_id) REFERENCES user_creds(user_id) ON DELETE CASCADE,
+            FOREIGN KEY(user_id) REFERENCES user_info(user_id) ON DELETE CASCADE,
             FOREIGN KEY(task_id) REFERENCES tasks(task_id) ON DELETE CASCADE,
             PRIMARY KEY(user_id, task_id)
         )`);
@@ -124,9 +128,10 @@ const findUserById = async (userId) => {
 }
 
 
-const createUser = async (username, password) => {
+const createUser = async (name, username, password) => {
     try{
-        const uid = uuidv4();;
+        const uid = uuidv4();
+        await executeQuery(`INSERT INTO user_info VALUES ("${uid}", "${name}", "${username}")`)
         const hashedPass = await bcrypt.hash(password, saltRounds)
         results = await executeQuery(`INSERT INTO user_creds VALUES ("${uid}", "${username}", "${hashedPass}");`);
         

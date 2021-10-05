@@ -54,7 +54,7 @@ const settingMenu = [
         id: 5,
         itemTitle: 'Log Out',
         iconClass: LogoutIcon,
-        link: '/login'
+        link: '/logout'
     }
 ]
 

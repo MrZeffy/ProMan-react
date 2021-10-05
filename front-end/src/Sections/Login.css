@@ -107,7 +107,12 @@
     align-items: center;
 }
 
-.ourLoginForm > *{
+.loginForm h2{
+    margin-top: 0;
+}
+
+
+.ourLoginForm  label, .ourLoginForm > input{
     display: block;
     
 }
@@ -116,6 +121,10 @@
     font-size: 1.1em;
     font-weight: bold;
     margin: 5px 0;
+}
+
+.signUpForm label{
+    font-size: 0.9em;
 }
 
 .ourLoginForm input{
@@ -127,6 +136,10 @@
     border-radius: 10px;
 }
 
+.signUpForm input{
+    font-size: 1em;
+    padding: 8px;
+}
 
 .ourLoginForm input::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
   color: #BBB;
@@ -141,6 +154,12 @@
   color: #BBB;
 }
 
+
+.errorText p{
+    margin: 0;
+    padding: 0;
+    color: red;
+}
 
 .loginButton{
     margin-top: 20px;    
@@ -169,7 +188,19 @@
     transition: 0.2s all ease-in-out;
 }
 
+.signUpForm .loginButton button svg{
+    font-size: 1.2em;
+    margin-left: 5px;
+    margin-right: 10px;
+    transition: 0.2s all ease-in-out;
+}
+
 .loginButton:hover button svg{
     margin-left: 5px;
     margin-right: 0;
+}
+
+.signUpForm .loginButton:hover button svg{
+    margin-left: 10px;
+    margin-right: 5px;
 }

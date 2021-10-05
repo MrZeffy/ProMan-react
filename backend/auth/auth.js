@@ -40,14 +40,13 @@ passport.deserializeUser(async (id, done)=>{
 })
  
 
-const registerNewUser = async (username, password)=>{
+const registerNewUser = async (name, username, password)=>{
     const user = await DBWrapper.findUser(username)
     if (user !== null){
-        
         return null;
     }
     
-    await DBWrapper.createUser(username, password);
+    await DBWrapper.createUser(name, username, password);
     
     const results = await DBWrapper.findUser(username);
     

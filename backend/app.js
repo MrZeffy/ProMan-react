@@ -9,11 +9,6 @@ const cors = require('cors');
 
 
 
-// Importing DB connection file.
-
-// const DBWrapper = require('./database/connection');
-
-
 // Initializing app.
 const app = express();
 
@@ -60,13 +55,16 @@ app.use(passport.session());
 // 1. Login Check middlewares. 
 
 const isLoggedInSign = (req, res, next) => {
-    if (req.isAuthenticated()) return res.redirect('/');
+    if (req.isAuthenticated()){
+        console.log("Already authenticated");
+        return res.redirect('/');
+    } 
     next();
 }
 
+// 2. Check if not logged in Middleware
 const checkIfNotLoggedIn = (req, res, next)=>{
-    console.log(req.headers.cookie, " ", req.user);
-
+    
     if(!req.isAuthenticated()){
         return res.send({"message": "Please login first"});
     }
@@ -83,7 +81,7 @@ app.get('/', (req, res)=>{
 });
 
 
-app.get('login', (req, res)=>{
+app.get('/login', (req, res)=>{
     res.send("LOGIN PAGE COMING SOON");
 })
 
@@ -108,18 +106,19 @@ app.get('/signup', isLoggedInSign, (req, res)=>{
 })
 
 app.post('/signup', isLoggedInSign, (req, res)=>{
-    let username = req.body.username;
+    let username = req.body.email;
+    let name = req.body.name;
     let password = req.body.password;
     if(!username || !password){
         return res.status().send({message: 'Bad Request'});
     }
-    registerNewUser(username, password).then((result)=>{
+    registerNewUser(name, username, password).then((result)=>{
         if(result === null){
-            
-            return res.redirect('/login');
+            console.log("USer already exists");
+            return res.json({emailExists: true});
         }
         res.send({message: 'Sign up successful'});
-    }).catch((err)=>{
+    }).catch((err)=>{ 
         console.log(err);
         return res.status(500).send({message: "Something went wrong"});
     })
@@ -128,6 +127,12 @@ app.post('/signup', isLoggedInSign, (req, res)=>{
 
 app.get('/getUser', checkIfNotLoggedIn,(req, res)=>{
     res.send(req.user);
+})
+
+app.get('/logout', checkIfNotLoggedIn, (req, res)=>{
+    req.logOut();
+    console.log("Logout successful");
+    return res.json({status: 0, message: "Logout successful"});
 })
 
 

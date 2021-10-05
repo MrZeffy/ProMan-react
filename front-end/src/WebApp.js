@@ -9,12 +9,12 @@ import OverviewSection from './Sections/OverviewSection';
 import SettingsSection from './Sections/SettingsSection';
 import TimeTracker from './Sections/TimeTracker'
 import LogoutSection from './Sections/LogoutSection'
+
+// Custom Hook.
 import { useUserInfo } from './Contexts/UserInfo';
 
 
 import { Switch, Route, Redirect } from 'react-router-dom';
-
-
 
 const routeData = [
   {
@@ -46,13 +46,11 @@ const routeData = [
 function App() {
   const [activeMenuItem, setActiveMenuItem] = React.useState(0);
   const loggedIn = useUserInfo();
-  
-
 
   return (
     <div className="App">
       
-        {(!loggedIn && <Redirect to="/login?message=1" />)}
+        {(!loggedIn && <Redirect to="/login" />)}
         
         <SideBar activeMenuItem={activeMenuItem} setActiveMenuItem={setActiveMenuItem}/>
 
@@ -62,50 +60,31 @@ function App() {
 
         </div>
 
-        
-
     </div>
   );
 }
 
 const RoutingComponenet = ({setActiveMenuItem})=>{
-  
-
-
   return (
 
     <Route render={()=>(
      
-          <Switch>
-            
+          <Switch>  
             <React.Fragment>
-
-
               {routeData.map(({path, data}, index) => {
                 const Component = data;
                 return (
-                  
-
                     <Route path={path} key={index} exact>
                       <Component setActiveMenuItem={setActiveMenuItem} item={index}/>
-
                     </Route>
-
                 )
               })}
-                              
-
             </React.Fragment>
           </Switch>
-       
     )}>
-
-    
     </Route>
 
   )
 }
   
-
-
 export default App;

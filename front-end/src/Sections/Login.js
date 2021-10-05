@@ -2,12 +2,13 @@ import './Login.css';
 import { useState } from 'react';
 
 import {Link, Redirect} from 'react-router-dom';
-import LoginIcon from '@material-ui/icons/ArrowRightAlt';
+import LoginForm from './LoginForm';
 import { useUserInfo, useUpdateUserInfo } from '../Contexts/UserInfo';
+import SignUpForm from './SignUpForm';
 
 
 
-const Login = () => {
+const Login = ({signUp}) => {
     
     
     // const [loggedIn, setLoggedIn] = useState(null);
@@ -59,25 +60,22 @@ const Login = () => {
                             </h2>
                         </div>   
                         <div className="welcomeHeading">
-                            Welcome Home :&#41;
+                            Welcome {(!signUp && "Home")} :&#41;
                         </div>
-                        <div className="noAccount">
+                        {(!signUp) ? 
+                        (<div className="noAccount">
                             <p>Don't have an account?</p>
                             <p><Link to="/signup">Register Now!</Link></p>
-                        </div>
+                        </div>)
+                        : (<div className="noAccount">
+                            <p>Already have an account?</p>
+                            <p><Link to="/login">Login Now!</Link></p>
+                        </div>)}
+                        
                     </div>
                 </div>
                 <div className="loginForm">
-                    <form className="ourLoginForm" onSubmit={handleLogin} >
-                        <h2>Sign in</h2>
-                        <label htmlFor="username">Username</label>
-                        <input onChange={(e)=>{setUsername(e.target.value)}} type="text" name="username" id="username" placeholder="Enter your username"/>
-                        <label htmlFor="password">Password</label>
-                        <input onChange={(e)=>{setPassword(e.target.value)}} type="password" name="password" id="password" placeholder="Enter your password"/>
-                        <div className="loginButton">
-                            <button type="submit"><p>Sign In</p> <LoginIcon /></button>
-                        </div>
-                    </form>
+                    {(!signUp)?<LoginForm setPassword={setPassword} setUsername={setUsername} handleLogin={handleLogin}/>:(<SignUpForm></SignUpForm>)}
                 </div>
             </div>
         </div>
