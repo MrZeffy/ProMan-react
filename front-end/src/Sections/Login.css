@@ -1,0 +1,206 @@
+.loginPage{
+    background-color: #86F0D3;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loginSectionContainer{
+    width: 60%;
+    background-color: white;
+    height: 80vh;
+    border-radius: 50px;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+}
+
+.loginSectionContainer > div{
+    /* background-color: black; */
+    height: 100%;
+    width: 100%;
+}
+.loginSectionContainer .formImageContainer{
+    border-radius: 50px;
+    background: url('../Assets/images/loginPageImage.jpg');
+}
+
+
+.formImageContainer{
+    display: flex;
+    
+    
+    justify-content: center;
+    align-items: center;
+}
+.imageContentContainer{
+    border-radius: 30px;
+    backdrop-filter: blur(8px);
+    height: 70%;
+    width: 70%;
+    color: white;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.imageContentContainer .titleText{
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+.imageContentContainer .titleText h2{
+    margin: 10px 0;
+}
+
+.imageContentContainer .titleText::after{
+    display: block;
+    position: relative;
+    bottom: 0;
+    left: 0;
+    content: " ";
+    color: white;
+    background-color: white;
+    width: 10%;
+    height: 6px;
+    border-radius: 5px;
+    transition: 0.2s all ease-in-out;
+}
+
+.imageContentContainer .titleText:hover:after{
+    width: 20%;
+}
+
+.imageContentContainer .welcomeHeading{
+    font-size: 1.4em;
+    font-family: 'Noto Sans JP', sans-serif;
+}
+
+.imageContentContainer .noAccount{
+    margin-top: auto;
+}
+
+
+.imageContentContainer .noAccount p{
+    padding: 0;
+    margin: 5px 0;
+}
+
+.imageContentContainer .noAccount a:link,
+ .imageContentContainer .noAccount a:hover,
+ .imageContentContainer .noAccount a:active,
+ .imageContentContainer .noAccount a:visited{
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+
+.loginForm{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loginForm h2{
+    margin-top: 0;
+}
+
+
+.ourLoginForm  label, .ourLoginForm > input{
+    display: block;
+    
+}
+
+.ourLoginForm label{
+    font-size: 1.1em;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+.signUpForm label{
+    font-size: 0.9em;
+}
+
+.ourLoginForm input{
+    margin: 5px 0;
+    outline: none;
+    border: 1px solid #DDD;
+    font-size: 1.1em;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.signUpForm input{
+    font-size: 1em;
+    padding: 8px;
+}
+
+.ourLoginForm input::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #BBB;
+  opacity: 1; /* Firefox */
+}
+
+.ourLoginForm input:-ms-input-placeholder {
+  color: #BBB;
+}
+
+.ourLoginForm input::-ms-input-placeholder { 
+  color: #BBB;
+}
+
+
+.errorText p{
+    margin: 0;
+    padding: 0;
+    color: red;
+}
+
+.loginButton{
+    margin-top: 20px;    
+}
+
+.loginButton button{
+    font-size: 1.2em;
+    width: 100%;
+    padding-left: 5px;
+    border: none;
+    outline: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: #459988;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.loginButton button svg{
+    font-size: 1.5em;
+    margin-left: 0px;
+    margin-right: 5px;
+    transition: 0.2s all ease-in-out;
+}
+
+.signUpForm .loginButton button svg{
+    font-size: 1.2em;
+    margin-left: 5px;
+    margin-right: 10px;
+    transition: 0.2s all ease-in-out;
+}
+
+.loginButton:hover button svg{
+    margin-left: 5px;
+    margin-right: 0;
+}
+
+.signUpForm .loginButton:hover button svg{
+    margin-left: 10px;
+    margin-right: 5px;
+}
