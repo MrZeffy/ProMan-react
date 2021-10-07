@@ -16,7 +16,6 @@ export const UserInfoProvider = ({children})=>{
 
     const [userObject, setUserObject] = useState(null);
     
-
     return (
         <UserInfoContext.Provider value={userObject}>
             <UpdateUserInfoContext.Provider value={setUserObject}>

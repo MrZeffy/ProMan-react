@@ -137,6 +137,13 @@ app.get('/logout', checkIfNotLoggedIn, (req, res)=>{
 
 
 
+// Data Transfer.
+
+app.post('/tasks', checkIfNotLoggedIn, (req, res)=>{
+    console.log(req.body.tasks);
+})
+
+
 
 
 

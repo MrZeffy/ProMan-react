@@ -9,16 +9,14 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 
 const ProjectTaskDropSection = ({ id, heading, tasks, addNewTask, projects, currentFilter, updateTaskCategory, deleteTask }) => {
 
+    useEffect(()=>{
+        console.log("project task drop section re-rendered");
+    })
 
     tasks = tasks[id];
 
     const [fillData, setfillData] = useState(null);
 
-
-    useEffect(() => {
-        setfillData(null)
-        
-    }, [fillData])
 
 
     const taskCount = tasks.length;
@@ -26,32 +24,33 @@ const ProjectTaskDropSection = ({ id, heading, tasks, addNewTask, projects, curr
 
     const handleNewButtonClick = () => {
         setshowAddForm(true)
-        
+
     }
 
 
 
 
-    const returnColorStyle = (projectName) => {        
+    const returnColorStyle = (projectName) => {
         return {
-        color: projects[projectName][0]
-    }}
+            color: projects[projectName][0]
+        }
+    }
 
-    const handleDrag = (e)=>{
+    const handleDrag = (e) => {
         e.preventDefault();
     }
 
-    const handleDragStart = (e, taskId)=>{
+    const handleDragStart = (e, taskId) => {
         e.dataTransfer.setData("id", taskId);
         e.dataTransfer.setData("oldIndex", id);
-        
+
     }
 
 
 
-    const handleDropEvent = (e)=>{
-        
-        
+    const handleDropEvent = (e) => {
+
+
         const taskId = e.dataTransfer.getData("id");
         const taskCategoryIndex = e.dataTransfer.getData("oldIndex");
 
@@ -63,10 +62,10 @@ const ProjectTaskDropSection = ({ id, heading, tasks, addNewTask, projects, curr
     }
     return (
         <>
-            {(showAddForm) ? <AddNewTaskForm id={id} setshowAddForm={setshowAddForm} addNewTask={addNewTask} fillData={fillData} setfillData={setfillData}/> : ''}
+            {(showAddForm) ? <AddNewTaskForm id={id} setshowAddForm={setshowAddForm} addNewTask={addNewTask} fillData={fillData} setfillData={setfillData} /> : ''}
 
-            <div className="projectDropSection" onDragOver={(e)=>handleDrag(e)}
-            onDrop={(e)=>handleDropEvent(e)}>
+            <div className="projectDropSection" onDragOver={(e) => handleDrag(e)}
+                onDrop={(e) => handleDropEvent(e)}>
                 <div className="projectSectionDetailsContainer">
                     <div className="sectionHeadingContainer">
                         <h4>{heading}</h4>
@@ -79,44 +78,44 @@ const ProjectTaskDropSection = ({ id, heading, tasks, addNewTask, projects, curr
                     <button index={id} onClick={handleNewButtonClick}>+</button>
                 </div>
 
-                
-                {tasks.filter((currentTask)=>
-                (currentTask.taskProject === currentFilter 
-                    || currentFilter === null))
-                .map((currentTask)=>(
-                    <div className="taskContainer" key={currentTask.taskId} draggable
-                    onDragStart={(e)=>handleDragStart(e, currentTask.taskId)}>
-                        
-                        <div className="headingAndButtonsContainer">
-                            <div className="taskHeadingContainer">
-                                <h5>
-                                    <FiberManualRecordIcon
-                                        style={returnColorStyle(currentTask.taskProject)}
-                                        className="headingDot" />
-                                    {currentTask.taskTitle}
-                                </h5>
-                            </div>
-                            <div className="modifyButtons">
-                                <button onClick={()=>{
-                                    setfillData(currentTask);
-                                    setshowAddForm(true);
-                                }}>
-                                    <span title="Edit"><EditOutlinedIcon className="modifyButtonIcons" /></span>
-                                </button>
-                                <button onClick={()=>{
-                                    deleteTask(currentTask.taskId, id)
-                                }}>
-                                    <span title="Delete"><DeleteOutlineIcon className="modifyButtonIcons" /></span>
-                                </button>
-                                
-                            </div>
-                            
-                        </div>
 
-                        <p className="taskDescriptionText">{currentTask.taskDescription}</p>
-                        <p className="taskProjectText">{currentTask.taskProject}</p>
-                    </div>
-                ))}
+                {tasks.filter((currentTask) =>
+                (currentTask.taskProject === currentFilter
+                    || currentFilter === null))
+                    .map((currentTask) => (
+                        <div className="taskContainer" key={currentTask.taskId} draggable
+                            onDragStart={(e) => handleDragStart(e, currentTask.taskId)}>
+
+                            <div className="headingAndButtonsContainer">
+                                <div className="taskHeadingContainer">
+                                    <h5>
+                                        <FiberManualRecordIcon
+                                            style={returnColorStyle(currentTask.taskProject)}
+                                            className="headingDot" />
+                                        {currentTask.taskTitle}
+                                    </h5>
+                                </div>
+                                <div className="modifyButtons">
+                                    <button onClick={() => {
+                                        setfillData(currentTask);
+                                        setshowAddForm(true);
+                                    }}>
+                                        <span title="Edit"><EditOutlinedIcon className="modifyButtonIcons" /></span>
+                                    </button>
+                                    <button onClick={() => {
+                                        deleteTask(currentTask.taskId, id)
+                                    }}>
+                                        <span title="Delete"><DeleteOutlineIcon className="modifyButtonIcons" /></span>
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                            <p className="taskDescriptionText">{currentTask.taskDescription}</p>
+                            <p className="taskProjectText">{currentTask.taskProject}</p>
+                        </div>
+                    ))}
 
             </div>
         </>

@@ -12,6 +12,10 @@ import TopBar from '../Components/TopBar';
 import ProjectTaskDropSection from '../Components/ProjectTaskDropSection';
 import StatusBar from '../Components/StatusBar';
 
+// Custom Hooks
+
+import { useFetchFunctionContext } from '../Contexts/FetchHook';
+
 
 const projectSectionHeadings = ['To do', 'In progress', 'Completed'];
 
@@ -26,38 +30,81 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
 
     const [projects, setProjects] = useState({});
 
+    const fetchCustom = useFetchFunctionContext();
+
 
     useEffect(() => {
+        const dataToSend = [];
+        tasks.forEach((sub, index)=>{
+            sub.forEach((task)=>{
+                dataToSend.push({
+                    ...task,
+                    state: index
+                });
+            })
+        });
+        console.log(dataToSend);
+        // Sending Tasks to the backend.
+
+        fetchCustom('/tasks', 'POST', {tasks: dataToSend});
         
-    }, [tasks])
-
-    const addNewTask = (task, id)=>{
-        // 'updating task list')
-        const alreadyExisting = tasks;
-
-        
-
-        task['taskId'] = uuid();
+    }, [tasks, fetchCustom]);
 
 
-        const oldProjects = projects;
+    const editExistingTask = (task, id) => {
+        let alreadyExisting = [...tasks];
 
-        if(!oldProjects[task.taskProject]){
-            oldProjects[task.taskProject] = [`
+        alreadyExisting[id] = alreadyExisting[id].map((entry)=>{
+            if(entry.taskId === task.taskId){
+                if(entry.taskProject !== task.taskProject){
+                    addProject(task.taskProject);
+                }
+                return task;
+            }
+            return entry;
+        });
+
+        setTasks(alreadyExisting);
+    }
+
+    const addProject = (taskProject) =>{
+        const oldProjects = {...projects};
+
+        if (!oldProjects[taskProject]) {
+            oldProjects[taskProject] = [`
             rgb(${Math.floor(Math.random() * 255)}, 
             ${Math.floor(Math.random() * 255)}, 
             ${Math.floor(Math.random() * 255)})`
-            , 1]
-            
-        }else{
-            oldProjects[task.taskProject][1] += 1;
+                , 1]
+
+        } else {
+            oldProjects[taskProject][1] += 1;
         }
 
         setProjects(oldProjects);
+    }
+
+    const addNewTask = (task, id, edit)=>{
+        // 'updating task list')
+
+        if(edit){
+            return editExistingTask(task, id);
+        }
+        const alreadyExisting = [...tasks];
+
+        const anotherArray = tasks.map((cats)=>{return {...cats}});
+
+        console.log(alreadyExisting, anotherArray);
+
+        task['taskId'] = uuid();
+
+        addProject(task.taskProject);
+        
         
         
         alreadyExisting[id].push(task);
         setTasks(alreadyExisting);
+        console.log("Set tasks successfuly")
         
     }
 
