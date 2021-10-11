@@ -118,7 +118,7 @@ const findUserById = async (userId) => {
     try {
         results = await executeQuery(`SELECT * FROM user_creds WHERE user_id="${userId}";`)
         if (!results || results.length == 0) {
-            throw new Error('User not found');
+            return null;
         } else {
             return results[0];
         }
