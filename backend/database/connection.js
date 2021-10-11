@@ -131,10 +131,13 @@ const findUserById = async (userId) => {
 const createUser = async (name, username, password) => {
     try{
         const uid = uuidv4();
+        if(!name || !username || !password){
+            throw new Error('Bad request');
+        }
         await executeQuery(`INSERT INTO user_info VALUES ("${uid}", "${name}", "${username}")`)
         const hashedPass = await bcrypt.hash(password, saltRounds)
         results = await executeQuery(`INSERT INTO user_creds VALUES ("${uid}", "${username}", "${hashedPass}");`);
-        
+        return await findUserById(uid);
     }
     catch(err){
         throw new Error('Error creating user', err);

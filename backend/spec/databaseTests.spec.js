@@ -14,11 +14,7 @@ describe('Testing methods responsible for CRUD operations', ()=>{
         await DBWrapper.establishConnection();
         await DBWrapper.setupSchema();
 
-    })
-
-    it('Just empty', ()=>{
-        expect(1).toEqual(1);
-    })
+    })    
 
     describe('Find a user function', () => {
 
@@ -51,6 +47,23 @@ describe('Testing methods responsible for CRUD operations', ()=>{
             }
         })
 
+    })
+
+    it('The function responsible for creating a new user', async ()=>{
+        try{
+
+            // Already existing user.
+            let promise = DBWrapper.createUser('John', 'john55@gmail.com', '1234');
+            await expectAsync(promise).toBeRejected();
+
+            // Incomplete data
+            promise = DBWrapper.createUser('no Data');
+            await expectAsync(promise).toBeRejected();
+        }
+        catch(err){
+            console.log("Test failed with error", err)
+                fail(err);
+        }
     })
     
 })
