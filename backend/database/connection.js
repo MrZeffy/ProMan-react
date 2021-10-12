@@ -91,7 +91,7 @@ const setupSchema = async () => {
         )`);
 
 
-        console.log("SCHEMA SETUP SUCCESSFUL");
+        
 
     }catch(err){
         throw new Error(err);
@@ -109,6 +109,24 @@ const findUser = async (username) => {
             return results[0];
         }
     }catch(err){
+        throw new Error(err);
+    }
+}
+
+const deleteUser = async (username) =>{
+    try{
+        // Check if user exists.
+        result = await findUser(username);
+        
+        if(result === null){
+            return {message: 'User does not exists'};            
+        }
+
+        // Removing User
+        await executeQuery(`DELETE FROM user_info WHERE email="${username}"`);    
+        return {message: 'User removed'};
+    }
+    catch(err){
         throw new Error(err);
     }
 }
@@ -132,14 +150,15 @@ const createUser = async (name, username, password) => {
     try{
         const uid = uuidv4();
         if(!name || !username || !password){
-            throw new Error('Bad request');
+            return null;
         }
-        await executeQuery(`INSERT INTO user_info VALUES ("${uid}", "${name}", "${username}")`)
+        await executeQuery(`INSERT INTO user_info VALUES ("${uid}", "${name}", "${username}");`)
         const hashedPass = await bcrypt.hash(password, saltRounds)
-        results = await executeQuery(`INSERT INTO user_creds VALUES ("${uid}", "${username}", "${hashedPass}");`);
-        return await findUserById(uid);
+        await executeQuery(`INSERT INTO user_creds VALUES ("${uid}", "${username}", "${hashedPass}");`);
+        return await findUser(username);
     }
     catch(err){
+        console.log(err);
         throw new Error('Error creating user', err);
     }
 }
@@ -163,7 +182,8 @@ module.exports = {
     executeQuery,
     createUser,
     matchPassword,
-    findUserById
+    findUserById,
+    deleteUser
 }
 
 

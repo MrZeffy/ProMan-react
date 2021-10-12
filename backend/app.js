@@ -65,7 +65,7 @@ const isLoggedInSign = (req, res, next) => {
 // 2. Check if not logged in Middleware
 const checkIfNotLoggedIn = (req, res, next)=>{
     
-    if(!req.isAuthenticated()){
+    if(!req.isAuthenticated()){        
         return res.send({"message": "Please login first"});
     }
 
@@ -86,17 +86,15 @@ app.get('/login', (req, res)=>{
 })
 
 
-app.post('/login', isLoggedInSign, passport.authenticate('local'), (req, res)=>{
-    console.log(req.body.username, req.body.password);
+app.post('/login', isLoggedInSign, passport.authenticate('local'), (req, res)=>{    
     req.logIn(req.user, (err)=>{
-        console.log("User logging in")
+        
         res.setHeader('Access-Control-Allow-Credentials', 'true')
         if(err){
-            console.log(err);
+            
             return res.send({"message": "Error"});
         } 
-    });
-    console.log(req.isAuthenticated());
+    });    
     res.send(req.user);
 });
 
@@ -110,16 +108,15 @@ app.post('/signup', isLoggedInSign, (req, res)=>{
     let name = req.body.name;
     let password = req.body.password;
     if(!username || !password){
-        return res.status().send({message: 'Bad Request'});
+        return res.status(400).send({message: 'Bad Request'});
     }
     registerNewUser(name, username, password).then((result)=>{
-        if(result === null){
-            console.log("USer already exists");
+        if(result === null){            
             return res.json({emailExists: true});
         }
         res.send({message: 'Sign up successful'});
     }).catch((err)=>{ 
-        console.log(err);
+        
         return res.status(500).send({message: "Something went wrong"});
     })
 }) 
@@ -131,7 +128,7 @@ app.get('/getUser', checkIfNotLoggedIn,(req, res)=>{
 
 app.get('/logout', checkIfNotLoggedIn, (req, res)=>{
     req.logOut();
-    console.log("Logout successful");
+    
     return res.json({status: 0, message: "Logout successful"});
 })
 
@@ -151,17 +148,16 @@ app.post('/tasks', checkIfNotLoggedIn, (req, res)=>{
 
 DBWrapper.establishConnection()
 .then(()=>{
-    console.log('Database Connection Successful');
+    
     return DBWrapper.setupSchema()
-}).then(()=>{
-    // Server listening to incoming requests.
-    app.listen(port, () => {
-        console.log(`Server is listening at http://localhost:${port}`);
-    })
 })
 .catch((err)=>{
     console.log(err.message);
+    server.close();
 })
 
+let server = app.listen(port, () => {
+    console.log(`Server is listening at http://localhost:${port}`);
+})
 
-
+module.exports = server;
