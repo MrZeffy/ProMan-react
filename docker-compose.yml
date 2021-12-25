@@ -1,0 +1,21 @@
+version: '2'
+
+services:
+  server:
+    restart: always
+    build: ./backend
+    container_name: proman-server
+    depends_on: 
+      - database
+    ports:
+      - "80:3001"
+
+  database:
+    image: mysql
+    container_name: database
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Daman6232
+
+

@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import './AddNewTaskForm.css'
 import {v4 as uuid} from 'uuid';
 
@@ -11,12 +11,20 @@ const AddNewTaskForm = ({id, setshowAddForm, addNewTask, fillData, setfillData})
 
     console.log("check ", fillData)
 
+    let editTask = (fillData!==null)?true:false;
+
+    useEffect(() => {
+        console.log("editing");
+    });
+
 
     let intialTitle = ''
     let initialDescription = ''
     let initialProject = ''
-
+    console.log(editTask, "Edit task in start");
     if(fillData !== null){
+        console.log('Edit mode');
+        editTask = true;
         intialTitle = fillData.taskTitle;
         initialDescription = fillData.taskDescription
         initialProject = fillData.taskProject
@@ -30,19 +38,21 @@ const AddNewTaskForm = ({id, setshowAddForm, addNewTask, fillData, setfillData})
     
 
     const handleCancel = ()=>{
+        setfillData(null)
         setshowAddForm(false);
     }
 
     const handleSubmit = (event)=>{
-        handleCancel();
+        console.log(editTask, "Edit task");
+             
         addNewTask({
-            taskId: uuid(),
+            taskId: (!editTask)?uuid():fillData.taskId,
             taskTitle: title,
             taskDescription: description,
             taskProject: project
-        }, id);
+        }, id, editTask);
         
-        
+        handleCancel();
         event.preventDefault();
     }
 
