@@ -9,7 +9,7 @@ const LogoutSection = ({ setActiveMenuItem, item }) => {
 
     useEffect(() => {
         setActiveMenuItem(item);    
-        fetch('http://localhost:3001/logout', {
+        fetch('http://localhost/logout', {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json',

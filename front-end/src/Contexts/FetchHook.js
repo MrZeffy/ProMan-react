@@ -10,7 +10,7 @@ export const useFetchFunctionContext = () => {
 
 export const FetchHookProvider = ({children}) => {
     const fetchData = (url, method, body) =>{
-        return fetch(`http://localhost:3001${url}`, {
+        return fetch(`http://localhost${url}`, {
             method: method,
             headers: {
                 'Content-type': 'application/json',

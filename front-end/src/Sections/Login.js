@@ -22,7 +22,7 @@ const Login = ({signUp}) => {
         e.preventDefault();
 
 
-        fetch('http://localhost:3001/login/', {
+        fetch('http://localhost/login/', {
             method: 'POST',
             headers: {'Content-type': 'application/json',
             'Accept': 'Application/json',
@@ -33,7 +33,7 @@ const Login = ({signUp}) => {
         .then((data)=>data.json())
         .then((data)=>{
             console.log("login successful", data);
-            return fetch('http://localhost:3001/getUser/', {credentials: 'include'})
+            return fetch('http://localhost/getUser/', {credentials: 'include'})
         })
         .then((data)=>data.json())
         .then((data)=>{

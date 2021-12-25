@@ -28,7 +28,7 @@ const SignUpForm = () => {
             name, email, password
         };
         
-        fetch('http://localhost:3001/signup/', {
+        fetch('http://localhost/signup/', {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
