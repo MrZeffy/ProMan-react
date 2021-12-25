@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const session = require('express-session');
 const cors = require('cors');
+const mysql = require('mysql');
 
 
 
@@ -19,9 +20,10 @@ const port = process.env.PORT || 3001;
 
 // Getting DB Connector
 const dbConnectionOptions = {
-    host: 'localhost',
+    host: 'database',
     user: 'root',
-    password: 'Daman6232'
+    password: 'Daman6232',
+    port: 3306
 };
 
 DBWrapper.setConnector(dbConnectionOptions);
