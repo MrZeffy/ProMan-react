@@ -32,9 +32,9 @@ const establishConnection = ()=>{
 // Using async keyword.
 // Creating Wrapper so we can work with promises.
 // Executes a given query and returns the resul.
-const executeQuery = (queryString) =>{
+const executeQuery = (query) =>{
     return new Promise((resolve, reject)=>{
-        connector.query(queryString, (err, result) => {
+        connector.query(query, (err, result) => {
             if (err) {
                 
                 reject(err);
@@ -101,7 +101,12 @@ const setupSchema = async () => {
 
 const findUser = async (username) => {
     try{
-        results = await executeQuery(`SELECT * FROM user_creds WHERE username="${username}";`)
+        // Escaping inputs to prevent SQL Injection.
+        let queryObject = {
+            sql: 'SELECT * FROM user_creds WHERE username="?"',
+            values: [username]
+        }
+        results = await executeQuery(queryObject);
         
         if (!results || results.length == 0) {
             return null;
@@ -134,7 +139,11 @@ const deleteUser = async (username) =>{
 
 const findUserById = async (userId) => {
     try {
-        results = await executeQuery(`SELECT * FROM user_creds WHERE user_id="${userId}";`)
+        let queryObject = {
+            sql: 'SELECT * FROM user_creds WHERE user_id=""',
+            values: [userId]
+        }
+        results = await executeQuery(queryObject)
         if (!results || results.length == 0) {
             return null;
         } else {
@@ -152,9 +161,20 @@ const createUser = async (name, username, password) => {
         if(!name || !username || !password){
             return null;
         }
-        await executeQuery(`INSERT INTO user_info VALUES ("${uid}", "${name}", "${username}");`)
+        let queryObject = {
+            sql: 'INSERT INTO user_info VALUES ("?", "?", "?")',
+            values: [uid, name, username]
+        }
+        await executeQuery(queryObject)
+        
         const hashedPass = await bcrypt.hash(password, saltRounds)
-        await executeQuery(`INSERT INTO user_creds VALUES ("${uid}", "${username}", "${hashedPass}");`);
+
+        queryObject = {
+            sql: 'INSERT INTO user_creds VALUES ("${uid}", "${username}", "${hashedPass}")',
+            values: [uid, username, hashedPass]
+        }
+
+        await executeQuery(queryObject);
         return await findUser(username);
     }
     catch(err){
