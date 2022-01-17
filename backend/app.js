@@ -1,4 +1,5 @@
 // Importing from packages.
+require('dotenv').config();
 const express = require('express');
 const {passport, DBWrapper, registerNewUser} = require('./auth/auth');
 const cookieParser = require('cookie-parser')
@@ -22,7 +23,7 @@ const port = process.env.PORT || 3001;
 const dbConnectionOptions = {
     host: 'database',
     user: 'root',
-    password: 'Daman6232',
+    password: process.env.MYSQL_PASSWORD || '',
     port: 3306
 };
 
