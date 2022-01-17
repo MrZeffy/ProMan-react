@@ -109,7 +109,7 @@ const findUser = async (username) => {
     try{
         // Escaping inputs to prevent SQL Injection.
         let queryObject = {
-            sql: 'SELECT * FROM user_creds WHERE username="?"',
+            sql: 'SELECT * FROM user_creds WHERE username=?',
             values: [username]
         }
         results = await executeQuery(queryObject);
@@ -146,7 +146,7 @@ const deleteUser = async (username) =>{
 const findUserById = async (userId) => {
     try {
         let queryObject = {
-            sql: 'SELECT * FROM user_creds WHERE user_id=""',
+            sql: 'SELECT * FROM user_creds WHERE user_id=?',
             values: [userId]
         }
         results = await executeQuery(queryObject)
@@ -168,7 +168,7 @@ const createUser = async (name, username, password) => {
             return null;
         }
         let queryObject = {
-            sql: 'INSERT INTO user_info VALUES ("?", "?", "?")',
+            sql: 'INSERT INTO user_info VALUES (?, ?, ?)',
             values: [uid, name, username]
         }
         await executeQuery(queryObject)
@@ -176,7 +176,7 @@ const createUser = async (name, username, password) => {
         const hashedPass = await bcrypt.hash(password, saltRounds)
 
         queryObject = {
-            sql: 'INSERT INTO user_creds VALUES ("${uid}", "${username}", "${hashedPass}")',
+            sql: 'INSERT INTO user_creds VALUES (?, ?, ?)',
             values: [uid, username, hashedPass]
         }
 
@@ -185,7 +185,7 @@ const createUser = async (name, username, password) => {
     }
     catch(err){
         console.log(err);
-        throw new Error('Error creating user', err);
+        throw new Error('Error creating user'+err.message);
     }
 }
 
@@ -204,7 +204,7 @@ const addNewProject = async (userId, projectName, indicatorColor)=>{
         const projectId = uuidv4();
         
         let queryObject = {
-            sql: 'INSERT INTO projects VALUES("?", "?", "?", "?")',
+            sql: 'INSERT INTO projects VALUES(?, ?, ?, ?)',
             values: [projectId, projectName, userId, indicatorColor]
         };
 
@@ -218,7 +218,7 @@ const addNewProject = async (userId, projectName, indicatorColor)=>{
 const findProject = async (projectId) => {
     try{
         let queryObject = {
-            sql: 'SELECT * FROM projects WHERE project_id = "?"',
+            sql: 'SELECT * FROM projects WHERE project_id = ?',
             values: [projectId]
         };
 
@@ -234,7 +234,7 @@ const findProject = async (projectId) => {
 
 const deleteProject = async (projectId) => {
     let queryObject = {
-        sql: 'DELETE FROM projects WHERE project_id = "?"',
+        sql: 'DELETE FROM projects WHERE project_id = ?',
         values: [projectId]
     };
 
@@ -264,7 +264,7 @@ const addNewTask = async (taskDetails, userId)=>{
         let formattedTaskCreationDate = utils.getDateTimeString(new Date);
         let formattedTaskDeadline = utils.getDateTimeString(new Date(taskDeadline));
         let queryObject = {
-            sql: 'INSERT INTO tasks VALUES ("?", "?", "?", "?", "?", "?")',
+            sql: 'INSERT INTO tasks VALUES (?, ?, ?, ?, ?, ?)',
             values: [taskId, taskTitle, taskProjectId, taskDescription, formattedTaskDeadline, formattedTaskCreationDate]
         };
 
@@ -285,7 +285,11 @@ module.exports = {
     createUser,
     matchPassword,
     findUserById,
-    deleteUser
+    deleteUser,
+    addNewProject,
+    deleteProject,
+    findProject,
+    addNewTask
 }
 
 
