@@ -1,6 +1,7 @@
 require('dotenv').config();
 const DBWrapper = require('../database/connection');
 const {registerNewUser} = require('../auth/auth');
+const testUtils = require('../utils/testUtils');
 
 
 describe('Testing methods responsible for CRUD operations', ()=>{
@@ -198,7 +199,108 @@ describe('Testing methods responsible for CRUD operations', ()=>{
             await DBWrapper.deleteUser(user.username);
         });
     });
-    
- 
-})
+
+    describe('Finding a project', ()=>{
+        let projectId = null;
+        let projectName = 'Dummy project';
+        let user = null;
+        beforeAll(async ()=>{
+            user = await DBWrapper.createUser('John Cena', 'john55@gmail.com', '1234');
+            projectId = await DBWrapper.addNewProject(user.user_id, projectName, 'rgb(1,1,1)');
+        });
+
+        afterAll(async ()=>{
+            await DBWrapper.deleteUser(user.username);
+        });
+
+        it('With correct id', async ()=>{
+            let returnedProject = await DBWrapper.findProject(projectId);
+            expect(returnedProject.project_name).toEqual(projectName);
+            expect(returnedProject.project_admin).toEqual(user.user_id);
+        });
+
+        it('With incorrect id', async ()=>{
+            let returnedProject = await DBWrapper.findProject('invalidId');
+            expect(returnedProject).toBeNull();
+        })
+        
+        it('When no parameter is sent', async ()=>{
+            let returnedProject = await DBWrapper.findProject();
+            expect(returnedProject).toBeNull();
+        })
+    });
+
+    describe('Delete a project', ()=>{
+        let user = null;
+        let projectId = null;
+        let projectName = 'Dummy project';
+        
+        beforeAll(async () => {
+            user = await DBWrapper.createUser('John Cena', 'john55@gmail.com', '1234');
+            projectId = await DBWrapper.addNewProject(user.user_id, projectName, 'rgb(1,1,1)');
+        });
+
+        afterAll(async () => {
+            await DBWrapper.deleteUser(user.username);
+        });
+
+        it('When correct projectId is given', async ()=>{
+            let returnedPromise = DBWrapper.deleteProject(projectId);
+            await expectAsync(returnedPromise).toBeResolved();
+
+            let result = await DBWrapper.findProject(projectId);
+            expect(result).toBeNull;
+        });
+
+        it('When no id is given', async () => {
+            let returnedPromise = DBWrapper.deleteProject('incorrectId');
+            await expectAsync(returnedPromise).toBeRejected('Project not found');
+        }); 
+    });
+
+    describe('Add new Task', ()=>{
+        let user = null;
+        let projectId = null;
+
+        beforeAll(async ()=>{
+            user = await DBWrapper.createUser('John Cena', 'john55@gmail.com', '1234');
+            projectId = await DBWrapper.addNewProject(user.user_id, 'Dummy text', 'rgb(0,0,0)');
+        });
+
+        afterAll(async () => {
+            await DBWrapper.deleteUser(user.username);
+        });
+
+        it('when project is already', async ()=>{
+            let taskDetails = testUtils.getDummyTask();
+
+            taskDetails.taskProjectId = projectId;
+
+            let returnedPromise = DBWrapper.addNewTask(taskDetails, user.user_id);
+            await expectAsync(returnedPromise).toBeResolved();
+            
+        });
+
+        it('when project is to be created', async ()=>{
+            let taskDetails = testUtils.getDummyTask();
+
+            taskDetails.taskProject = {
+                projectName: 'Dummy project',
+                indicatorColor: 'rgb(0,0,0)'
+            };
+            let returnedPromise = DBWrapper.addNewTask(taskDetails, user.user_id);
+            await expectAsync(returnedPromise).toBeResolved();
+            
+        });
+        
+        it('When project details are missing', async () => {
+            let taskDetails = testUtils.getDummyTask();
+
+            let returnedPromise = DBWrapper.addNewTask(taskDetails, user.user_id);
+            await expectAsync(returnedPromise).toBeRejected();
+
+        })
+    })
+
+});
 

@@ -209,6 +209,7 @@ const addNewProject = async (userId, projectName, indicatorColor)=>{
         };
 
         await executeQuery(queryObject);
+        return projectId;
     }
     catch(e){
         throw new Error("Error creating project" + e.message);
@@ -223,9 +224,8 @@ const findProject = async (projectId) => {
         };
 
         let results = await executeQuery(queryObject);
-
-        console.log(results);
-        return results;
+        
+        return (results.length > 0)?results[0]:null;
     }
     catch(err){
         throw new Error("Error finding Project "+err.message);
@@ -233,13 +233,15 @@ const findProject = async (projectId) => {
 }
 
 const deleteProject = async (projectId) => {
+    if(!await findProject(projectId)){
+        throw new Error('Project not found');
+    }
     let queryObject = {
         sql: 'DELETE FROM projects WHERE project_id = ?',
         values: [projectId]
     };
 
-    let results = await executeQuery(queryObject);
-    console.log(results);
+    await executeQuery(queryObject);    
 }
 
 const addNewTask = async (taskDetails, userId)=>{
@@ -265,10 +267,12 @@ const addNewTask = async (taskDetails, userId)=>{
         let formattedTaskDeadline = utils.getDateTimeString(new Date(taskDeadline));
         let queryObject = {
             sql: 'INSERT INTO tasks VALUES (?, ?, ?, ?, ?, ?)',
-            values: [taskId, taskTitle, taskProjectId, taskDescription, formattedTaskDeadline, formattedTaskCreationDate]
+            values: [taskId, taskTitle, taskProjectId, formattedTaskCreationDate, taskDescription, formattedTaskDeadline]
         };
 
         await executeQuery(queryObject);
+
+        return taskId;
         
     }
     catch(e){
