@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const bcrypt = require('bcrypt');
+const utils = require('../utils/utils');
 const { v4: uuidv4 } = require('uuid');
 
 
@@ -62,17 +63,22 @@ const setupSchema = async () => {
 
         );`);
         await executeQuery(`CREATE TABLE IF NOT EXISTS projects (
-            project_id VARCHAR(100) PRIMARY KEY,
-            project_name VARCHAR(50) NOT NULL
+            project_id VARCHAR(100),
+            project_name VARCHAR(50) NOT NULL,
+            project_admin VARCHAR(100),
+            indicator_color VARCHAR(50) NOT NULL,
+            PRIMARY KEY(project_id, project_admin),
+            FOREIGN KEY(project_admin) REFERENCES user_info(user_id) ON DELETE CASCADE
         );`);
+
         await executeQuery(`CREATE TABLE IF NOT EXISTS tasks (
             task_id VARCHAR(100) PRIMARY KEY,
             task_title VARCHAR(200) NOT NULL,
             project_id VARCHAR(100),
-            task_creation_date DATE,
+            task_creation_date DATETIME,
             FOREIGN KEY(project_id) REFERENCES projects(project_id) ON DELETE CASCADE,
             task_description TEXT,
-            task_deadline DATE
+            task_deadline DATETIME
         );`)
         await executeQuery(`CREATE TABLE IF NOT EXISTS task_owner (
             user_id VARCHAR(100),
@@ -84,7 +90,7 @@ const setupSchema = async () => {
         await executeQuery(`CREATE TABLE IF NOT EXISTS task_access (
             user_id VARCHAR(100),
             task_id VARCHAR(100),
-            date_assigned DATE,
+            date_assigned DATETIME,
             FOREIGN KEY(task_id) REFERENCES tasks(task_id) ON DELETE CASCADE,
             FOREIGN KEY(user_id) REFERENCES user_creds(user_id) ON DELETE CASCADE,
             PRIMARY KEY(user_id, task_id)
@@ -193,6 +199,82 @@ const matchPassword = async (user, plainPass)=>{
     }
 }
 
+const addNewProject = async (userId, projectName, indicatorColor)=>{
+    try{
+        const projectId = uuidv4();
+        
+        let queryObject = {
+            sql: 'INSERT INTO projects VALUES("?", "?", "?", "?")',
+            values: [projectId, projectName, userId, indicatorColor]
+        };
+
+        await executeQuery(queryObject);
+    }
+    catch(e){
+        throw new Error("Error creating project" + e.message);
+    }
+};
+
+const findProject = async (projectId) => {
+    try{
+        let queryObject = {
+            sql: 'SELECT * FROM projects WHERE project_id = "?"',
+            values: [projectId]
+        };
+
+        let results = await executeQuery(queryObject);
+
+        console.log(results);
+        return results;
+    }
+    catch(err){
+        throw new Error("Error finding Project "+err.message);
+    }
+}
+
+const deleteProject = async (projectId) => {
+    let queryObject = {
+        sql: 'DELETE FROM projects WHERE project_id = "?"',
+        values: [projectId]
+    };
+
+    let results = await executeQuery(queryObject);
+    console.log(results);
+}
+
+const addNewTask = async (taskDetails, userId)=>{
+    let {taskTitle, taskDeadline, taskDescription, taskProjectId, taskProject} = taskDetails;
+
+    // * use toISOString while sending dates from frontend.
+
+    let emptyInput = utils.isEmptyInput(taskTitle, taskDescription);
+    let projectInfoAbsent = !(taskProjectId || taskProject);
+    if(emptyInput || projectInfoAbsent){
+        throw new Error('Required input fields missing');
+    }
+    try{
+
+        // Check if project exists.
+        let projectFound = (taskProjectId)?await findProject(taskProjectId):null;
+        if(!projectFound || projectFound.length < 1){
+            await addNewProject(userId, taskProject.projectName, taskProject.indicatorColor);
+        }
+
+        let taskId = uuidv4();
+        let formattedTaskCreationDate = utils.getDateTimeString(new Date);
+        let formattedTaskDeadline = utils.getDateTimeString(new Date(taskDeadline));
+        let queryObject = {
+            sql: 'INSERT INTO tasks VALUES ("?", "?", "?", "?", "?", "?")',
+            values: [taskId, taskTitle, taskProjectId, taskDescription, formattedTaskDeadline, formattedTaskCreationDate]
+        };
+
+        await executeQuery(queryObject);
+        
+    }
+    catch(e){
+        throw new Error(e);
+    }
+}
 
 module.exports = {
     findUser,
