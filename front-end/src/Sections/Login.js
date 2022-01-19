@@ -56,7 +56,7 @@ const Login = ({signUp}) => {
                     <div className="imageContentContainer">
                         <div className="titleText">
                             <h2>
-                                ProMan
+                            <i class="fab fa-pushed fa-2x"></i> ProMan
                             </h2>
                         </div>   
                         <div className="welcomeHeading">
