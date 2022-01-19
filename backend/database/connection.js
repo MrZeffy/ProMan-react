@@ -75,10 +75,11 @@ const setupSchema = async () => {
             task_id VARCHAR(100) PRIMARY KEY,
             task_title VARCHAR(200) NOT NULL,
             project_id VARCHAR(100),
-            task_creation_date DATETIME,
+            task_creation_date DATETIME NOT NULL,
             FOREIGN KEY(project_id) REFERENCES projects(project_id) ON DELETE CASCADE,
             task_description TEXT,
-            task_deadline DATETIME
+            task_deadline DATETIME,
+            task_status INT NOT NULL
         );`)
         await executeQuery(`CREATE TABLE IF NOT EXISTS task_owner (
             user_id VARCHAR(100),
@@ -287,6 +288,10 @@ const getAllTasks = async (userId) => {
     try {
         let projects = await getAllProjects(userId);
 
+        if(!projects){
+            return null;
+        }
+
         let projectIds = projects.map((project)=>project.project_id);
 
         let queryObject = {
@@ -309,7 +314,7 @@ const getAllTasks = async (userId) => {
 }
 
 const addNewTask = async (taskDetails, userId)=>{
-    let {taskTitle, taskDeadline, taskDescription, taskProjectId, taskProject} = taskDetails;
+    let {taskTitle, taskDeadline, taskDescription, taskProjectId, taskProject, taskStatus} = taskDetails;
 
     // * use toISOString while sending dates from frontend.
 
@@ -330,8 +335,8 @@ const addNewTask = async (taskDetails, userId)=>{
         let formattedTaskCreationDate = utils.getDateTimeString(new Date);
         let formattedTaskDeadline = utils.getDateTimeString(new Date(taskDeadline));
         let queryObject = {
-            sql: 'INSERT INTO tasks VALUES (?, ?, ?, ?, ?, ?)',
-            values: [taskId, taskTitle, taskProjectId, formattedTaskCreationDate, taskDescription, formattedTaskDeadline]
+            sql: 'INSERT INTO tasks VALUES (?, ?, ?, ?, ?, ?, ?)',
+            values: [taskId, taskTitle, taskProjectId, formattedTaskCreationDate, taskDescription, formattedTaskDeadline, taskStatus]
         };
 
         await executeQuery(queryObject);
@@ -364,12 +369,34 @@ const findTaskById = async (taskId, userId) => {
     }
 }
 
+// TODO: Add unit tests.
 const deleteTask = async (taskId, userId) => {
     // TODO: delete only if user is admin of the task.
-    let taskPresent = await findTaskById(taskId);
+    try{
+        let taskPresent = await findTaskById(taskId);
 
-    if(!taskPresent){
-        throw new Error('invalid taskId');
+        if (!taskPresent) {
+            throw new Error('invalid taskId');
+        }
+
+        let projectId = taskPresent.project_id;
+        let foundProject = await findProject(projectId);
+        if (!foundProject) {
+            throw new Error('Invalid ProjectId');
+        }
+
+        if (foundProject.project_admin === userId) {
+            let queryObject = {
+                sql: 'DELETE FROM tasks WHERE task_id = ?',
+                values: [taskId]
+            }
+            await executeQuery(queryObject);
+            return;
+        }
+        throw new Error('Not enough rights');
+    }
+    catch(err){
+        throw new Error('Error deleting task: '+err.message)
     }
 }
 
@@ -389,7 +416,8 @@ module.exports = {
     findProject,
     addNewTask,
     getAllProjects,
-    getAllTasks
+    getAllTasks,
+    deleteTask
 }
 
 

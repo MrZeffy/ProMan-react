@@ -2,6 +2,7 @@ const isEmptyInput = (...inputs) => {
 
     for (let entry of inputs) {
         if (!entry || entry === '') {
+            console.log('Saying missing for ', entry);
             return true;
         }
     }

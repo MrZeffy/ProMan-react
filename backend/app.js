@@ -160,13 +160,14 @@ app.post('/tasks', checkIfNotLoggedIn, (req, res)=>{
 // {
 //     "task": {
 //     "taskTitle": "Task 1",
-//     "taskDeadline": "2022-02-18T10:28:00.401Z",
+//     "taskDeadline": "2022-02-18T10:28:00.401Z", (ISO STRING)
 //     "taskDescription": "taskDescription",
 //     "taskProject": {
 //                 "projectName": "Dummy project",
 //                 "indicatorColor": "rgb(0,0,0)"
 //             }
-//     "taskProjectId": id.
+//     "taskProjectId": id,
+//     "taskStatus": 0 / 1 / 2        
 //     }
 // }
 // taskProject is optional if taskProjectId is present.
@@ -208,11 +209,24 @@ app.get('/getAllProjects', checkIfNotLoggedIn, (req, res)=>{
     .catch((err) => {
         res.status(500).send(err.message);
     });
-
 })
 
+// Body: {taskId: id}
+app.delete('/deleteTask', checkIfNotLoggedIn, (req, res)=>{
+    let {taskId} = req.body;
+    if(!taskId){
+        res.status(400).send('Required fields missing');
+    }
 
-
+    DBWrapper.deleteTask(taskId, req.user.user_id)
+    .then(()=>{
+        res.send('DONE');
+    })
+    .catch((err)=>{
+        console.log(err);
+        res.status(500).send('Something went wrong!');
+    })
+})
 
 // Establishing connection to database
 
