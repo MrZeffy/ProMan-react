@@ -228,6 +228,21 @@ app.delete('/deleteTask', checkIfNotLoggedIn, (req, res)=>{
     })
 })
 
+app.put('/updateTask', checkIfNotLoggedIn, (req, res)=>{
+    let {task} = req.body;
+    console.log('input', task);
+
+    DBWrapper.updateTaskHandler(task, req.user.user_id)
+    .then(()=>{
+        res.send('DONE');
+    })
+    .catch((err)=>{
+        console.log(err);
+        res.status(500).send(err.message);
+    })
+
+})
+
 // Establishing connection to database
 
 DBWrapper.establishConnection()

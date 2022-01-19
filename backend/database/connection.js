@@ -332,7 +332,7 @@ const addNewTask = async (taskDetails, userId)=>{
         }
 
         let taskId = uuidv4();
-        let formattedTaskCreationDate = utils.getDateTimeString(new Date);
+        let formattedTaskCreationDate = utils.getDateTimeString(new Date());
         let formattedTaskDeadline = utils.getDateTimeString(new Date(taskDeadline));
         let queryObject = {
             sql: 'INSERT INTO tasks VALUES (?, ?, ?, ?, ?, ?, ?)',
@@ -369,23 +369,13 @@ const findTaskById = async (taskId, userId) => {
     }
 }
 
-// TODO: Add unit tests.
+// ! ALL the methods below are not covered in unit tests yet.
 const deleteTask = async (taskId, userId) => {
     // TODO: delete only if user is admin of the task.
     try{
-        let taskPresent = await findTaskById(taskId);
-
-        if (!taskPresent) {
-            throw new Error('invalid taskId');
-        }
-
-        let projectId = taskPresent.project_id;
-        let foundProject = await findProject(projectId);
-        if (!foundProject) {
-            throw new Error('Invalid ProjectId');
-        }
-
-        if (foundProject.project_admin === userId) {
+        let hasRights = await hasAdminRights(taskId, userId);
+        
+        if (hasRights) {
             let queryObject = {
                 sql: 'DELETE FROM tasks WHERE task_id = ?',
                 values: [taskId]
@@ -398,6 +388,67 @@ const deleteTask = async (taskId, userId) => {
     catch(err){
         throw new Error('Error deleting task: '+err.message)
     }
+}
+
+const updateTaskHandler = async (taskDetails, userId) => {
+    try{
+        let hasRights = await hasAdminRights(taskDetails.taskId, userId);
+        if (hasRights) {
+            console.log('We have the rights');
+            await coreTaskUpdator(taskDetails, userId);
+            console.log('Update done')
+        }
+        return;
+    }
+    catch(err){
+        console.log(err);
+        throw new Error('Error updating task '+err.message);
+    }
+    
+}
+
+const coreTaskUpdator = async (taskDetails, userId) => {
+    let { taskId, taskTitle, taskDeadline, taskDescription, taskProjectId, taskProject, taskStatus } = taskDetails;
+
+    // * use toISOString while sending dates from frontend.
+
+    let emptyInput = utils.isEmptyInput(taskTitle, taskDescription, taskId);
+    let projectInfoAbsent = !(taskProjectId || taskProject);
+    if (emptyInput || projectInfoAbsent) {
+        throw new Error('Required input fields missing');
+    }
+    
+    // Check if project exists.
+    let projectFound = (taskProjectId) ? await findProject(taskProjectId) : null;
+    if (!projectFound || projectFound.length < 1) {
+        taskProjectId = await addNewProject(userId, taskProject.projectName, taskProject.indicatorColor);
+    }
+
+      
+    let formattedTaskDeadline = utils.getDateTimeString(new Date(taskDeadline));
+    let queryObject = {
+        sql: 'UPDATE tasks SET  task_title=?, project_id=?, task_description=?, task_deadline=?, task_status=? WHERE task_id=?',
+        values: [taskTitle, taskProjectId, taskDescription, formattedTaskDeadline, taskStatus, taskId]
+    };
+    await executeQuery(queryObject);
+    return taskId;    
+}
+
+
+const hasAdminRights = async (taskId, userId) =>{
+    let foundTask = await findTaskById(taskId);
+
+    if (!foundTask) {
+        throw new Error('Invalid taskId');
+    }
+
+    let projectId = foundTask.project_id;
+    let foundProject = await findProject(projectId);
+    if (!foundProject) {
+        throw new Error('Invalid ProjectId');
+    }
+
+    return foundProject.project_admin === userId;
 }
 
 module.exports = {
@@ -417,7 +468,8 @@ module.exports = {
     addNewTask,
     getAllProjects,
     getAllTasks,
-    deleteTask
+    deleteTask,
+    updateTaskHandler
 }
 
 
