@@ -17,26 +17,26 @@ import { useUserInfo } from './Contexts/UserInfo';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
 const routeData = [
+  // {
+  //   path: '/',
+  //   data: OverviewSection
+  // },
+  // {
+  //   path: '/tracker',
+  //   data: TimeTracker
+  // },
   {
     path: '/',
-    data: OverviewSection
-  },
-  {
-    path: '/tracker',
-    data: TimeTracker
-  },
-  {
-    path: '/projecttracker',
     data: ProjectSection
   },
-  {
-    path: '/inbox',
-    data: InboxSection
-  },
-  {
-    path: '/settings',
-    data: SettingsSection
-  },
+  // {
+  //   path: '/inbox',
+  //   data: InboxSection
+  // },
+  // {
+  //   path: '/settings',
+  //   data: SettingsSection
+  // },
   {
     path: '/logout',
     data: LogoutSection
