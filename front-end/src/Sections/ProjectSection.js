@@ -3,8 +3,6 @@ import './ProjectSection.css'
 import { useEffect } from 'react';
 
 
-import { v4 as uuid} from 'uuid';
-
 
 // Componenets
 
@@ -32,79 +30,98 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
 
     const fetchCustom = useFetchFunctionContext();
 
+    let tempProjects = {};
+    
+    useEffect(()=>{
+        refreshTasks();
+    }, []);
 
-    useEffect(() => {
-        const dataToSend = [];
-        tasks.forEach((sub, index)=>{
-            sub.forEach((task)=>{
-                dataToSend.push({
-                    ...task,
-                    state: index
-                });
+    const refreshTasks = ()=>{
+        fetchCustom('/getAllProjects')
+            .then((receivedProjects) => {
+                console.log('projects: ', receivedProjects);
+                populateProjects(receivedProjects);
+                console.log('after populating: ', JSON.parse(JSON.stringify(projects)));
+                return fetchCustom('/getAllTasks')
             })
-        });
-        console.log(dataToSend);
-        // Sending Tasks to the backend.
+            .then((receivedTasks) => {
+                console.log("Tasks: ", receivedTasks);
+                populateTasks(receivedTasks);
+            }).catch((err) => {
+                console.log('ERROR getting all tasks: ', err);
+            })
+    }
 
-        fetchCustom('/tasks', 'POST', {tasks: dataToSend});
+    const populateProjects = (receivedProjects) => {
+        let modifiedProjects = JSON.parse(JSON.stringify(projects));
+
+        if(receivedProjects)
+        receivedProjects.forEach((ele)=>{
+            modifiedProjects[ele.project_name] = [ele.indicator_color, 0, ele.project_id];
+        })
+
+        tempProjects = modifiedProjects;
         
-    }, [tasks, fetchCustom]);
+    }
 
-
-    const editExistingTask = (task, id) => {
-        let alreadyExisting = [...tasks];
-
-        alreadyExisting[id] = alreadyExisting[id].map((entry)=>{
-            if(entry.taskId === task.taskId){
-                if(entry.taskProject !== task.taskProject){
-                    addProject(task.taskProject);
-                }
-                return task;
-            }
-            return entry;
+    const populateTasks = (receivedTasks) => {
+        let modifiedTasks = [[], [], []];
+        let modifiedProjects = tempProjects;
+        console.log('copied: ',JSON.parse(JSON.stringify(modifiedProjects)));
+        
+        if(receivedTasks)
+        receivedTasks.forEach((ele)=>{
+            let ourTask = {};
+            ourTask.taskDescription = ele.task_description;
+            ourTask.taskId = ele.task_id;
+            ourTask.taskProject = ele.project_name;
+            ourTask.taskProjectId = ele.project_id;
+            ourTask.taskTitle = ele.task_title; 
+            modifiedProjects[ele.project_name][1] += 1;
+            modifiedTasks[ele.task_status].push(ourTask);
         });
 
-        setTasks(alreadyExisting);
+        setProjects(modifiedProjects);
+        setTasks(modifiedTasks);
+        
     }
-
-    const addProject = (taskProject) =>{
-        const oldProjects = {...projects};
-
-        if (!oldProjects[taskProject]) {
-            oldProjects[taskProject] = [`
-            rgb(${Math.floor(Math.random() * 255)}, 
-            ${Math.floor(Math.random() * 255)}, 
-            ${Math.floor(Math.random() * 255)})`
-                , 1]
-
-        } else {
-            oldProjects[taskProject][1] += 1;
-        }
-
-        setProjects(oldProjects);
-    }
+    
 
     const addNewTask = (task, id, edit)=>{
         // 'updating task list')
 
+        let endpoint = '/addNewTask';
+        let method = 'POST'
+
         if(edit){
-            return editExistingTask(task, id);
+            // return editExistingTask(task, id);
+            endpoint = '/updateTask';
+            method = 'PUT'
         }
-        const alreadyExisting = [...tasks];
 
-        const anotherArray = tasks.map((cats)=>{return {...cats}});
+        task.taskStatus = id;
+        let currentDate = new Date();
+        currentDate.setDate(currentDate.getDate()+30);
+        task.taskDeadline = currentDate.toISOString();
 
-        console.log(alreadyExisting, anotherArray);
+        if(projects[task.taskProject]){
+            task.taskProjectId = projects[task.taskProject][2];
+        }else{
+            task.taskProject = {
+                projectName: task.taskProject,
+                indicatorColor: `rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`
+            }
+        }
 
-        task['taskId'] = uuid();
+        console.log(JSON.parse(JSON.stringify(task)))
 
-        addProject(task.taskProject);
-        
-        
-        
-        alreadyExisting[id].push(task);
-        setTasks(alreadyExisting);
-        console.log("Set tasks successfuly")
+        fetchCustom(endpoint, method, {task: task})
+        .then(()=>{
+            refreshTasks();
+        })
+        .catch((err)=>{
+            console.log('something went wrong', err.message);
+        })
         
     }
 
@@ -120,30 +137,14 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
 
 
     const deleteTask = (taskId, catInd)=>{
-        const oldTasks = [...tasks];
-        let taskToRemove = null;
-        oldTasks[catInd] = oldTasks[catInd].filter((ele)=>{
-            if(ele.taskId === taskId){
-                taskToRemove = ele;
-            }
-            return (ele.taskId !== taskId)
-        });
 
-        let updatedProject = {...projects};
-
-
-
-        updatedProject[taskToRemove.taskProject][1] -= 1;
-
-        if (updatedProject[taskToRemove.taskProject][1] === 0){
-            delete updatedProject[taskToRemove.taskProject];
-        }
-
-        setProjects(updatedProject);
-
-
-
-        setTasks(oldTasks);
+        fetchCustom('/deleteTask', 'DELETE', {taskId})
+        .then(()=>{
+            refreshTasks();
+        })
+        .catch((err)=>{
+            console.log('Error Deleting task');
+        })        
     }
 
     return (

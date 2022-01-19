@@ -292,7 +292,12 @@ const getAllTasks = async (userId) => {
             return null;
         }
 
-        let projectIds = projects.map((project)=>project.project_id);
+        let projectIdNameMap = {};
+
+        let projectIds = projects.map((project)=>{
+            projectIdNameMap[project.project_id] = project.project_name;
+            return project.project_id;
+        });
 
         let queryObject = {
             sql: 'SELECT * FROM tasks WHERE project_id IN (?)',
@@ -304,6 +309,11 @@ const getAllTasks = async (userId) => {
         if(foundTasks.length < 1){
             return null;
         }
+
+        foundTasks = foundTasks.map((ele)=>{
+            ele.project_name = projectIdNameMap[ele.project_id];
+            return ele;
+        })
 
         return foundTasks;
 
