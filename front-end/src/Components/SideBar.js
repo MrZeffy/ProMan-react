@@ -72,7 +72,7 @@ const SideBar = ({activeMenuItem, setActiveMenuItem}) => {
 
             <div className="sideBar"> 
                 <div className="logoContainer">                    
-                    <p><a href="/" className="logoLink">ProMan</a></p>
+                    <p><a href="/" className="logoLink"><i class="fab fa-pushed fa-2x"></i>ProMan</a></p>
                 </div>
 
                 <div className="menuContainer">
