@@ -14,42 +14,42 @@ import LogoutIcon from '@material-ui/icons/ExitToAppOutlined'
 // folder-open
 
 const menuItems = [
+    // {
+    //     id: 0,
+    //     itemTitle: 'Overview',
+    //     iconClass: HomeIcon,
+    //     link: '/'
+    // },
+    // {
+    //     id: 1,
+    //     itemTitle: 'Tracker',
+    //     iconClass: AccessTimeIcon,
+    //     link: '/tracker'
+    // },
     {
         id: 0,
-        itemTitle: 'Overview',
+        itemTitle: 'To Do App',
         iconClass: HomeIcon,
         link: '/'
     },
-    {
-        id: 1,
-        itemTitle: 'Tracker',
-        iconClass: AccessTimeIcon,
-        link: '/tracker'
-    },
-    {
-        id: 2,
-        itemTitle: 'Projects',
-        iconClass: FolderIcon,
-        link: '/projecttracker'
-    },
-    {
-        id: 3,
-        itemTitle: 'Chats',
-        iconClass: SendIcon,
-        link: '/inbox'
-    }
+    // {
+    //     id: 3,
+    //     itemTitle: 'Chats',
+    //     iconClass: SendIcon,
+    //     link: '/inbox'
+    // }
     
     
 ]
 
 
 const settingMenu = [
-    {
-        id: 4,
-        itemTitle: 'Settings',
-        iconClass: SettingIcon,
-        link: '/settings'
-    },
+    // {
+    //     id: 4,
+    //     itemTitle: 'Settings',
+    //     iconClass: SettingIcon,
+    //     link: '/settings'
+    // },
     {
         id: 5,
         itemTitle: 'Log Out',
