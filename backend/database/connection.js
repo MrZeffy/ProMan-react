@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const bcrypt = require('bcrypt');
+const utils = require('../utils/utils');
 const { v4: uuidv4 } = require('uuid');
 
 
@@ -32,9 +33,9 @@ const establishConnection = ()=>{
 // Using async keyword.
 // Creating Wrapper so we can work with promises.
 // Executes a given query and returns the resul.
-const executeQuery = (queryString) =>{
+const executeQuery = (query) =>{
     return new Promise((resolve, reject)=>{
-        connector.query(queryString, (err, result) => {
+        connector.query(query, (err, result) => {
             if (err) {
                 
                 reject(err);
@@ -62,17 +63,23 @@ const setupSchema = async () => {
 
         );`);
         await executeQuery(`CREATE TABLE IF NOT EXISTS projects (
-            project_id VARCHAR(100) PRIMARY KEY,
-            project_name VARCHAR(50) NOT NULL
+            project_id VARCHAR(100),
+            project_name VARCHAR(50) NOT NULL,
+            project_admin VARCHAR(100),
+            indicator_color VARCHAR(50) NOT NULL,
+            PRIMARY KEY(project_id, project_admin),
+            FOREIGN KEY(project_admin) REFERENCES user_info(user_id) ON DELETE CASCADE
         );`);
+
         await executeQuery(`CREATE TABLE IF NOT EXISTS tasks (
             task_id VARCHAR(100) PRIMARY KEY,
             task_title VARCHAR(200) NOT NULL,
             project_id VARCHAR(100),
-            task_creation_date DATE,
+            task_creation_date DATETIME NOT NULL,
             FOREIGN KEY(project_id) REFERENCES projects(project_id) ON DELETE CASCADE,
             task_description TEXT,
-            task_deadline DATE
+            task_deadline DATETIME,
+            task_status INT NOT NULL
         );`)
         await executeQuery(`CREATE TABLE IF NOT EXISTS task_owner (
             user_id VARCHAR(100),
@@ -84,7 +91,7 @@ const setupSchema = async () => {
         await executeQuery(`CREATE TABLE IF NOT EXISTS task_access (
             user_id VARCHAR(100),
             task_id VARCHAR(100),
-            date_assigned DATE,
+            date_assigned DATETIME,
             FOREIGN KEY(task_id) REFERENCES tasks(task_id) ON DELETE CASCADE,
             FOREIGN KEY(user_id) REFERENCES user_creds(user_id) ON DELETE CASCADE,
             PRIMARY KEY(user_id, task_id)
@@ -101,7 +108,12 @@ const setupSchema = async () => {
 
 const findUser = async (username) => {
     try{
-        results = await executeQuery(`SELECT * FROM user_creds WHERE username="${username}";`)
+        // Escaping inputs to prevent SQL Injection.
+        let queryObject = {
+            sql: 'SELECT * FROM user_creds WHERE username=?',
+            values: [username]
+        }
+        results = await executeQuery(queryObject);
         
         if (!results || results.length == 0) {
             return null;
@@ -109,6 +121,26 @@ const findUser = async (username) => {
             return results[0];
         }
     }catch(err){
+        throw new Error(err);
+    }
+}
+
+// TODO: add unit tests
+const getUserDetails = async (username) => {
+    try {
+        // Escaping inputs to prevent SQL Injection.
+        let queryObject = {
+            sql: 'SELECT * FROM user_info WHERE email=?',
+            values: [username]
+        }
+        results = await executeQuery(queryObject);
+
+        if (!results || results.length == 0) {
+            return null;
+        } else {
+            return results[0];
+        }
+    } catch (err) {
         throw new Error(err);
     }
 }
@@ -134,7 +166,11 @@ const deleteUser = async (username) =>{
 
 const findUserById = async (userId) => {
     try {
-        results = await executeQuery(`SELECT * FROM user_creds WHERE user_id="${userId}";`)
+        let queryObject = {
+            sql: 'SELECT * FROM user_creds WHERE user_id=?',
+            values: [userId]
+        }
+        results = await executeQuery(queryObject)
         if (!results || results.length == 0) {
             return null;
         } else {
@@ -152,14 +188,25 @@ const createUser = async (name, username, password) => {
         if(!name || !username || !password){
             return null;
         }
-        await executeQuery(`INSERT INTO user_info VALUES ("${uid}", "${name}", "${username}");`)
+        let queryObject = {
+            sql: 'INSERT INTO user_info VALUES (?, ?, ?)',
+            values: [uid, name, username]
+        }
+        await executeQuery(queryObject)
+        
         const hashedPass = await bcrypt.hash(password, saltRounds)
-        await executeQuery(`INSERT INTO user_creds VALUES ("${uid}", "${username}", "${hashedPass}");`);
+
+        queryObject = {
+            sql: 'INSERT INTO user_creds VALUES (?, ?, ?)',
+            values: [uid, username, hashedPass]
+        }
+
+        await executeQuery(queryObject);
         return await findUser(username);
     }
     catch(err){
         console.log(err);
-        throw new Error('Error creating user', err);
+        throw new Error('Error creating user'+err.message);
     }
 }
 
@@ -173,9 +220,240 @@ const matchPassword = async (user, plainPass)=>{
     }
 }
 
+const addNewProject = async (userId, projectName, indicatorColor)=>{
+    try{
+        const projectId = uuidv4();
+        
+        let queryObject = {
+            sql: 'INSERT INTO projects VALUES(?, ?, ?, ?)',
+            values: [projectId, projectName, userId, indicatorColor]
+        };
+
+        await executeQuery(queryObject);
+        return projectId;
+    }
+    catch(e){
+        throw new Error("Error creating project" + e.message);
+    }
+};
+
+const findProject = async (projectId) => {
+    try{
+        let queryObject = {
+            sql: 'SELECT * FROM projects WHERE project_id = ?',
+            values: [projectId]
+        };
+
+        let results = await executeQuery(queryObject);
+        
+        return (results.length > 0)?results[0]:null;
+    }
+    catch(err){
+        throw new Error("Error finding Project "+err.message);
+    }
+}
+
+// TODO: Add unit tests.
+const getAllProjects = async (userId) => {
+    try {
+        let queryObject = {
+            sql: 'SELECT * FROM projects WHERE project_admin = ?',
+            values: [userId]
+        };
+
+        let results = await executeQuery(queryObject);
+
+        return (results.length > 0) ? results : null;
+    }
+    catch (err) {
+        throw new Error("Error finding Project " + err.message);
+    }
+}
+
+const deleteProject = async (projectId) => {
+    if(!await findProject(projectId)){
+        throw new Error('Project not found');
+    }
+    let queryObject = {
+        sql: 'DELETE FROM projects WHERE project_id = ?',
+        values: [projectId]
+    };
+
+    await executeQuery(queryObject);    
+}
+
+
+// TODO: add unit tests.
+const getAllTasks = async (userId) => {
+    try {
+        let projects = await getAllProjects(userId);
+
+        if(!projects){
+            return null;
+        }
+
+        let projectIds = projects.map((project)=>project.project_id);
+
+        let queryObject = {
+            sql: 'SELECT * FROM tasks WHERE project_id IN (?)',
+            values: [projectIds]
+        };
+
+        let foundTasks = await executeQuery(queryObject);
+
+        if(foundTasks.length < 1){
+            return null;
+        }
+
+        return foundTasks;
+
+    }
+    catch (err) {
+        throw new Error("Error finding tasks " + err.message);
+    }
+}
+
+const addNewTask = async (taskDetails, userId)=>{
+    let {taskTitle, taskDeadline, taskDescription, taskProjectId, taskProject, taskStatus} = taskDetails;
+
+    // * use toISOString while sending dates from frontend.
+
+    let emptyInput = utils.isEmptyInput(taskTitle, taskDescription);
+    let projectInfoAbsent = !(taskProjectId || taskProject);
+    if(emptyInput || projectInfoAbsent){
+        throw new Error('Required input fields missing');
+    }
+    try{
+
+        // Check if project exists.
+        let projectFound = (taskProjectId)?await findProject(taskProjectId):null;
+        if(!projectFound || projectFound.length < 1){
+            taskProjectId = await addNewProject(userId, taskProject.projectName, taskProject.indicatorColor);
+        }
+
+        let taskId = uuidv4();
+        let formattedTaskCreationDate = utils.getDateTimeString(new Date());
+        let formattedTaskDeadline = utils.getDateTimeString(new Date(taskDeadline));
+        let queryObject = {
+            sql: 'INSERT INTO tasks VALUES (?, ?, ?, ?, ?, ?, ?)',
+            values: [taskId, taskTitle, taskProjectId, formattedTaskCreationDate, taskDescription, formattedTaskDeadline, taskStatus]
+        };
+
+        await executeQuery(queryObject);
+
+        return taskId;
+        
+    }
+    catch(e){
+        throw new Error('Error adding new task '+e.message);
+    }
+}
+
+const findTaskById = async (taskId, userId) => {
+    // TODO: enable task access restrictions.
+    try{
+        let queryObject = {
+            sql: 'SELECT * FROM tasks WHERE task_id = ?',
+            values: [taskId]
+        }
+
+        let tasks = await executeQuery(queryObject);
+        if (tasks.length < 1) {
+            throw new Error('Invalid taskId');
+        }
+
+        return tasks[0];
+    }
+    catch(err){
+        throw new Error('Error finding task '+err.message);
+    }
+}
+
+// ! ALL the methods below are not covered in unit tests yet.
+const deleteTask = async (taskId, userId) => {
+    // TODO: delete only if user is admin of the task.
+    try{
+        let hasRights = await hasAdminRights(taskId, userId);
+        
+        if (hasRights) {
+            let queryObject = {
+                sql: 'DELETE FROM tasks WHERE task_id = ?',
+                values: [taskId]
+            }
+            await executeQuery(queryObject);
+            return;
+        }
+        throw new Error('Not enough rights');
+    }
+    catch(err){
+        throw new Error('Error deleting task: '+err.message)
+    }
+}
+
+const updateTaskHandler = async (taskDetails, userId) => {
+    try{
+        let hasRights = await hasAdminRights(taskDetails.taskId, userId);
+        if (hasRights) {
+            console.log('We have the rights');
+            await coreTaskUpdator(taskDetails, userId);
+            console.log('Update done')
+        }
+        return;
+    }
+    catch(err){
+        console.log(err);
+        throw new Error('Error updating task '+err.message);
+    }
+    
+}
+
+const coreTaskUpdator = async (taskDetails, userId) => {
+    let { taskId, taskTitle, taskDeadline, taskDescription, taskProjectId, taskProject, taskStatus } = taskDetails;
+
+    // * use toISOString while sending dates from frontend.
+
+    let emptyInput = utils.isEmptyInput(taskTitle, taskDescription, taskId);
+    let projectInfoAbsent = !(taskProjectId || taskProject);
+    if (emptyInput || projectInfoAbsent) {
+        throw new Error('Required input fields missing');
+    }
+    
+    // Check if project exists.
+    let projectFound = (taskProjectId) ? await findProject(taskProjectId) : null;
+    if (!projectFound || projectFound.length < 1) {
+        taskProjectId = await addNewProject(userId, taskProject.projectName, taskProject.indicatorColor);
+    }
+
+      
+    let formattedTaskDeadline = utils.getDateTimeString(new Date(taskDeadline));
+    let queryObject = {
+        sql: 'UPDATE tasks SET  task_title=?, project_id=?, task_description=?, task_deadline=?, task_status=? WHERE task_id=?',
+        values: [taskTitle, taskProjectId, taskDescription, formattedTaskDeadline, taskStatus, taskId]
+    };
+    await executeQuery(queryObject);
+    return taskId;    
+}
+
+
+const hasAdminRights = async (taskId, userId) =>{
+    let foundTask = await findTaskById(taskId);
+
+    if (!foundTask) {
+        throw new Error('Invalid taskId');
+    }
+
+    let projectId = foundTask.project_id;
+    let foundProject = await findProject(projectId);
+    if (!foundProject) {
+        throw new Error('Invalid ProjectId');
+    }
+
+    return foundProject.project_admin === userId;
+}
 
 module.exports = {
     findUser,
+    getUserDetails,
     setupSchema,
     setConnector, 
     establishConnection,
@@ -183,7 +461,15 @@ module.exports = {
     createUser,
     matchPassword,
     findUserById,
-    deleteUser
+    deleteUser,
+    addNewProject,
+    deleteProject,
+    findProject,
+    addNewTask,
+    getAllProjects,
+    getAllTasks,
+    deleteTask,
+    updateTaskHandler
 }
 
 

@@ -1,4 +1,5 @@
 // Importing from packages.
+require('dotenv').config();
 const express = require('express');
 const {passport, DBWrapper, registerNewUser} = require('./auth/auth');
 const cookieParser = require('cookie-parser')
@@ -6,6 +7,7 @@ const bodyParser = require('body-parser')
 const session = require('express-session');
 const cors = require('cors');
 const mysql = require('mysql');
+const { getUserDetails } = require('./database/connection');
 
 
 
@@ -22,7 +24,7 @@ const port = process.env.PORT || 3001;
 const dbConnectionOptions = {
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: process.env.MYSQL_PASSWORD || 'password',
     port: 3306
 };
 
@@ -97,7 +99,12 @@ app.post('/login', isLoggedInSign, passport.authenticate('local'), (req, res)=>{
             return res.send({"message": "Error"});
         } 
     });    
-    res.send(req.user);
+    getUserDetails(req.user.username)
+        .then((userDetails) => {
+            let fullName = userDetails.name;
+            let {user_id, username} = req.user;            
+            res.send({ user_id, username, name: fullName });
+        })
 });
 
 
@@ -125,7 +132,14 @@ app.post('/signup', isLoggedInSign, (req, res)=>{
 
 
 app.get('/getUser', checkIfNotLoggedIn,(req, res)=>{
-    res.send(req.user);
+    
+    getUserDetails(req.user.username)
+        .then((userDetails) => {
+            let fullName = userDetails.name;
+            let { user_id, username } = req.user;
+            res.send({ user_id, username, name: fullName });
+        })
+    
 })
 
 app.get('/logout', checkIfNotLoggedIn, (req, res)=>{
@@ -142,9 +156,92 @@ app.post('/tasks', checkIfNotLoggedIn, (req, res)=>{
     console.log(req.body.tasks);
 })
 
+// Request body sample
+// {
+//     "task": {
+//     "taskTitle": "Task 1",
+//     "taskDeadline": "2022-02-18T10:28:00.401Z", (ISO STRING)
+//     "taskDescription": "taskDescription",
+//     "taskProject": {
+//                 "projectName": "Dummy project",
+//                 "indicatorColor": "rgb(0,0,0)"
+//             }
+//     "taskProjectId": id,
+//     "taskStatus": 0 / 1 / 2        
+//     }
+// }
+// taskProject is optional if taskProjectId is present.
+// TODO: Add functionality tests
+app.post('/addNewTask', checkIfNotLoggedIn, (req, res)=>{
+    console.log(req.body.task);
+    console.log(req.user.user_id);
 
+    let ourTask = req.body.task;
 
+    DBWrapper.addNewTask(ourTask, req.user.user_id)
+    .then((taskId)=>{
+        console.log('Returned task Id', taskId);
+        res.send('DONE');
+    })
+    .catch((err)=>{
+        console.log(err);
+        res.status(500).send("{message: 'Something went wrong'}");
+    })
+});
 
+app.get('/getAllTasks', checkIfNotLoggedIn, (req, res)=>{
+    DBWrapper.getAllTasks(req.user.user_id)
+    .then((data)=>{
+        console.log(data);
+        res.json(data);
+    })
+    .catch((err)=>{
+        res.status(500).send(err.message);
+    });
+});
+
+app.get('/getAllProjects', checkIfNotLoggedIn, (req, res)=>{
+    DBWrapper.getAllProjects(req.user.user_id)
+    .then((data)=>{
+        console.log(data);
+        res.json(data);
+    })
+    .catch((err) => {
+        res.status(500).send(err.message);
+    });
+})
+
+// Body: {taskId: id}
+app.delete('/deleteTask', checkIfNotLoggedIn, (req, res)=>{
+    let {taskId} = req.body;
+    if(!taskId){
+        res.status(400).send('Required fields missing');
+    }
+
+    DBWrapper.deleteTask(taskId, req.user.user_id)
+    .then(()=>{
+        res.send('DONE');
+    })
+    .catch((err)=>{
+        console.log(err);
+        res.status(500).send('Something went wrong!');
+    })
+})
+
+app.put('/updateTask', checkIfNotLoggedIn, (req, res)=>{
+    let {task} = req.body;
+    console.log('input', task);
+
+    DBWrapper.updateTaskHandler(task, req.user.user_id)
+    .then(()=>{
+        res.send('DONE');
+    })
+    .catch((err)=>{
+        console.log(err);
+        res.status(500).send(err.message);
+    })
+
+})
 
 // Establishing connection to database
 

@@ -1,3 +1,4 @@
+require('dotenv').config();
 const axios = require('axios');
 const DBWrapper = require('../database/connection');
 
@@ -7,8 +8,18 @@ describe('testing API endpoints', ()=>{
     let server = null;
     beforeAll((done)=>{
         server = require('../app');
-        setTimeout(()=>{done()},
-            500);
+        setTimeout(async ()=>{
+            dbConnectionOptions = {
+                host: 'localhost',
+                user: 'root',
+                password: process.env.MYSQL_PASSWORD || 'password'
+            };
+            DBWrapper.setConnector(dbConnectionOptions);
+
+            await DBWrapper.establishConnection();
+            await DBWrapper.setupSchema();
+            done()},
+            1000);
 
     })
     it('Should return homepage',async ()=>{
