@@ -276,7 +276,36 @@ const addNewTask = async (taskDetails, userId)=>{
         
     }
     catch(e){
-        throw new Error(e);
+        throw new Error('Error adding new task '+e.message);
+    }
+}
+
+const findTaskById = async (taskId, userId) => {
+    // TODO: enable task access restrictions.
+    try{
+        let queryObject = {
+            sql: 'SELECT * FROM tasks WHERE task_id = ?',
+            values: [taskId]
+        }
+
+        let tasks = await executeQuery(queryObject);
+        if (tasks.length < 1) {
+            throw new Error('Invalid taskId');
+        }
+
+        return tasks[0];
+    }
+    catch(err){
+        throw new Error('Error finding task '+err.message);
+    }
+}
+
+const deleteTask = async (taskId, userId) => {
+    // TODO: delete only if user is admin of the task.
+    let taskPresent = await findTaskById(taskId);
+
+    if(!taskPresent){
+        throw new Error('invalid taskId');
     }
 }
 
