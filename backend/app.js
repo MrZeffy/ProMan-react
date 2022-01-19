@@ -22,7 +22,7 @@ const port = process.env.PORT || 3001;
 
 // Getting DB Connector
 const dbConnectionOptions = {
-    host: 'localhost',
+    host: 'database',
     user: 'root',
     password: process.env.MYSQL_PASSWORD || 'password',
     port: 3306
