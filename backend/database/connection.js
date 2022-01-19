@@ -413,8 +413,7 @@ const updateTaskHandler = async (taskDetails, userId) => {
     catch(err){
         console.log(err);
         throw new Error('Error updating task '+err.message);
-    }
-    
+    }    
 }
 
 const coreTaskUpdator = async (taskDetails, userId) => {
@@ -442,6 +441,25 @@ const coreTaskUpdator = async (taskDetails, userId) => {
     };
     await executeQuery(queryObject);
     return taskId;    
+}
+
+const updateTaskStatus = async (taskId, updatedStatus, userId) => {
+    try{
+        let hasRights = await hasAdminRights(taskId, userId);        
+        if (hasRights) {
+            let queryObject = {
+                sql: 'UPDATE tasks SET task_status=? WHERE task_id=?',
+                values: [updatedStatus, taskId]
+            }
+            await executeQuery(queryObject);
+            return;
+        }
+
+        throw new Error('Unauthorized Access buddy');
+    }
+    catch(err){
+        throw new Error('Error updating status: '+err.message);
+    }
 }
 
 
@@ -479,7 +497,8 @@ module.exports = {
     getAllProjects,
     getAllTasks,
     deleteTask,
-    updateTaskHandler
+    updateTaskHandler,
+    updateTaskStatus
 }
 
 
