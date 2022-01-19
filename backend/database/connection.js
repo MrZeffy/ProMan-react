@@ -124,6 +124,26 @@ const findUser = async (username) => {
     }
 }
 
+// TODO: add unit tests
+const getUserDetails = async (username) => {
+    try {
+        // Escaping inputs to prevent SQL Injection.
+        let queryObject = {
+            sql: 'SELECT * FROM user_info WHERE email=?',
+            values: [username]
+        }
+        results = await executeQuery(queryObject);
+
+        if (!results || results.length == 0) {
+            return null;
+        } else {
+            return results[0];
+        }
+    } catch (err) {
+        throw new Error(err);
+    }
+}
+
 const deleteUser = async (username) =>{
     try{
         // Check if user exists.
@@ -232,6 +252,23 @@ const findProject = async (projectId) => {
     }
 }
 
+// TODO: Add unit tests.
+const getAllProjects = async (userId) => {
+    try {
+        let queryObject = {
+            sql: 'SELECT * FROM projects WHERE project_admin = ?',
+            values: [userId]
+        };
+
+        let results = await executeQuery(queryObject);
+
+        return (results.length > 0) ? results : null;
+    }
+    catch (err) {
+        throw new Error("Error finding Project " + err.message);
+    }
+}
+
 const deleteProject = async (projectId) => {
     if(!await findProject(projectId)){
         throw new Error('Project not found');
@@ -242,6 +279,33 @@ const deleteProject = async (projectId) => {
     };
 
     await executeQuery(queryObject);    
+}
+
+
+// TODO: add unit tests.
+const getAllTasks = async (userId) => {
+    try {
+        let projects = await getAllProjects(userId);
+
+        let projectIds = projects.map((project)=>project.project_id);
+
+        let queryObject = {
+            sql: 'SELECT * FROM tasks WHERE project_id IN (?)',
+            values: [projectIds]
+        };
+
+        let foundTasks = await executeQuery(queryObject);
+
+        if(foundTasks.length < 1){
+            return null;
+        }
+
+        return foundTasks;
+
+    }
+    catch (err) {
+        throw new Error("Error finding tasks " + err.message);
+    }
 }
 
 const addNewTask = async (taskDetails, userId)=>{
@@ -259,7 +323,7 @@ const addNewTask = async (taskDetails, userId)=>{
         // Check if project exists.
         let projectFound = (taskProjectId)?await findProject(taskProjectId):null;
         if(!projectFound || projectFound.length < 1){
-            await addNewProject(userId, taskProject.projectName, taskProject.indicatorColor);
+            taskProjectId = await addNewProject(userId, taskProject.projectName, taskProject.indicatorColor);
         }
 
         let taskId = uuidv4();
@@ -311,6 +375,7 @@ const deleteTask = async (taskId, userId) => {
 
 module.exports = {
     findUser,
+    getUserDetails,
     setupSchema,
     setConnector, 
     establishConnection,
@@ -322,7 +387,9 @@ module.exports = {
     addNewProject,
     deleteProject,
     findProject,
-    addNewTask
+    addNewTask,
+    getAllProjects,
+    getAllTasks
 }
 
 
