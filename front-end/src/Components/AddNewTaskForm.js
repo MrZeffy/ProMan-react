@@ -1,10 +1,5 @@
 import {useState, useEffect} from 'react'
 import './AddNewTaskForm.css'
-import {v4 as uuid} from 'uuid';
-
-
-
-
 
 const AddNewTaskForm = ({id, setshowAddForm, addNewTask, fillData, setfillData}) => {
     
@@ -46,7 +41,7 @@ const AddNewTaskForm = ({id, setshowAddForm, addNewTask, fillData, setfillData})
         console.log(editTask, "Edit task");
              
         addNewTask({
-            taskId: (!editTask)?uuid():fillData.taskId,
+            taskId: (!editTask)?null:fillData.taskId,
             taskTitle: title,
             taskDescription: description,
             taskProject: project

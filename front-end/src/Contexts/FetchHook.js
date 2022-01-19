@@ -10,16 +10,20 @@ export const useFetchFunctionContext = () => {
 
 export const FetchHookProvider = ({children}) => {
     const fetchData = (url, method, body) =>{
-        return fetch(`http://localhost${url}`, {
-            method: method,
+        let fetchOptions = {
+            method: method || 'GET',
             headers: {
                 'Content-type': 'application/json',
                 'Accept': 'Application/json',
                 'Access-Control-Allow-Origin': 'http://localhost:3000'
             },
-            credentials: 'include',
-            body: JSON.stringify(body)
-        }).then((data) => data.json());
+            credentials: 'include',            
+        }
+
+        if(body){            
+            fetchOptions.body = JSON.stringify(body);
+        }
+        return fetch(`http://localhost${url}`, fetchOptions).then((data) => data.json());
     }
     return (
         <FetchFunctionContext.Provider value={fetchData}>

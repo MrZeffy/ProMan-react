@@ -181,7 +181,7 @@ app.post('/addNewTask', checkIfNotLoggedIn, (req, res)=>{
     DBWrapper.addNewTask(ourTask, req.user.user_id)
     .then((taskId)=>{
         console.log('Returned task Id', taskId);
-        res.send('DONE');
+        res.send({message: 'DONE'});
     })
     .catch((err)=>{
         console.log(err);
@@ -220,7 +220,7 @@ app.delete('/deleteTask', checkIfNotLoggedIn, (req, res)=>{
 
     DBWrapper.deleteTask(taskId, req.user.user_id)
     .then(()=>{
-        res.send('DONE');
+        res.send({message: 'DONE'});
     })
     .catch((err)=>{
         console.log(err);
@@ -234,7 +234,7 @@ app.put('/updateTask', checkIfNotLoggedIn, (req, res)=>{
 
     DBWrapper.updateTaskHandler(task, req.user.user_id)
     .then(()=>{
-        res.send('DONE');
+        res.send({message: 'DONE'});
     })
     .catch((err)=>{
         console.log(err);
