@@ -15,7 +15,7 @@ const app = express();
 
 
 // Setting up port
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 3001;
 
 
 // Getting DB Connector
