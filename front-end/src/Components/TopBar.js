@@ -13,7 +13,7 @@ const TopBar = ({projects, showFilterMenu, setshowFilterMenu, setcurrentFilter,
     return (
         <div className="headingSection">
             <div className="headingContainer">
-                <h2>Projects</h2>
+                <h2>To Do App</h2>
             </div>
 
             <div className="filterContainer">

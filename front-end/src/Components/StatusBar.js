@@ -8,16 +8,16 @@ const StatusBar = () => {
     return (
         <div className="statusBarContainer">
             <div className="statusContainer">
-                <div className="helpContainer">
+                {/* <div className="helpContainer">
                     <HelpOutlineOutlinedIcon />
                 </div>
                 <div className="notificationIcon">
                     <NotificationsNoneOutlinedIcon />
-                </div>
+                </div> */}
                 <div className="userOptionsContainer">
                     
                     <div className="nameContainer">
-                        Daman Kumar
+                        User
                     </div>
                     <div className="arrowIcon">
                         <ExpandMoreOutlinedIcon />
