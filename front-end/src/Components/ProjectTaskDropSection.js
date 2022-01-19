@@ -62,7 +62,7 @@ const ProjectTaskDropSection = ({ id, heading, tasks, addNewTask, projects, curr
     }
     return (
         <>
-            {(showAddForm) ? <AddNewTaskForm id={id} setshowAddForm={setshowAddForm} addNewTask={addNewTask} fillData={fillData} setfillData={setfillData} /> : ''}
+            {(showAddForm) ? <AddNewTaskForm id={id} setshowAddForm={setshowAddForm} addNewTask={addNewTask} fillData={fillData} setfillData={setfillData} projects={projects}/> : ''}
 
             <div className="projectDropSection" onDragOver={(e) => handleDrag(e)}
                 onDrop={(e) => handleDropEvent(e)}>

@@ -240,6 +240,25 @@ app.put('/updateTask', checkIfNotLoggedIn, (req, res)=>{
         console.log(err);
         res.status(500).send(err.message);
     })
+})
+
+// Body: {taskId, status}
+app.put('/updateTaskStatus', checkIfNotLoggedIn, (req, res)=>{
+    let {taskId, status} = req.body;
+    console.log(taskId, status);
+
+    if(!taskId || !status){
+        res.status(400).send({error: 'Bad Request'});
+    }
+
+    DBWrapper.updateTaskStatus(taskId, status, req.user.user_id)
+    .then(()=>{        
+        res.send({message: 'DONE'})
+    })
+    .catch((err)=>{        
+        res.status(500).send({err: err.message});
+    })
+
 
 })
 

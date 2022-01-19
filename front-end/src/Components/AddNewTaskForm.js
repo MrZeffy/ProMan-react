@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react'
 import './AddNewTaskForm.css'
 
-const AddNewTaskForm = ({id, setshowAddForm, addNewTask, fillData, setfillData}) => {
+const AddNewTaskForm = ({id, setshowAddForm, addNewTask, fillData, setfillData, projects}) => {
     
 
     console.log("check ", fillData)
@@ -70,10 +70,9 @@ const AddNewTaskForm = ({id, setshowAddForm, addNewTask, fillData, setfillData})
                     required
                     onChange={(event)=>{handleChange(event, setproject)}}/>
                 <datalist id="projectSelectedList">
-                    <option value="blah"></option>
-                    <option value="blah" />
-                    <option value="black" />
-                    <option value="sheep" />
+                    {Object.keys(projects).map((ele)=>(
+                        <option key={projects[ele][2]} value={ele} />
+                    ))}
                 </datalist>
                 <input type="text" name="taskTitle" id="taskTitle" 
                 placeholder='Title'

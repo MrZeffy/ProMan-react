@@ -111,9 +111,7 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
                 projectName: task.taskProject,
                 indicatorColor: `rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`
             }
-        }
-
-        console.log(JSON.parse(JSON.stringify(task)))
+        }        
 
         fetchCustom(endpoint, method, {task: task})
         .then(()=>{
@@ -125,14 +123,15 @@ const ProjectSection = ({ setActiveMenuItem, item }) => {
         
     }
 
-    const updateTaskCategory = (id, oldCatInd, newCatInd)=>{
-        const oldTask = [...tasks];
-        const taskToMove = oldTask[oldCatInd].find((ele)=>ele.taskId===id);        
-        
-        oldTask[newCatInd].push(taskToMove);
-        oldTask[oldCatInd] = oldTask[oldCatInd].filter((ele)=>(!(ele.taskId===id)))
-        
-        setTasks(oldTask);
+    const updateTaskCategory = (taskId, oldCatInd, newCatInd)=>{
+
+        fetchCustom('/updateTaskStatus', 'PUT', {taskId, status: newCatInd})
+        .then(()=>{
+            refreshTasks();
+        })
+        .catch((err)=>{
+            console.log('error updating status', err.message);
+        });
     }
 
 
