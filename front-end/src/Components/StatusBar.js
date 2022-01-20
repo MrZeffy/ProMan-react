@@ -3,8 +3,10 @@ import './StatusBar.css'
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 import NotificationsNoneOutlinedIcon from '@material-ui/icons/NotificationsNoneOutlined';
 import ExpandMoreOutlinedIcon from '@material-ui/icons/ExpandMoreOutlined';
+import { useUserInfo } from '../Contexts/UserInfo';
 
 const StatusBar = () => {
+    let user = useUserInfo();    
     return (
         <div className="statusBarContainer">
             <div className="statusContainer">
@@ -17,7 +19,7 @@ const StatusBar = () => {
                 <div className="userOptionsContainer">
                     
                     <div className="nameContainer">
-                        User
+                        {user.name}
                     </div>
                     <div className="arrowIcon">
                         <ExpandMoreOutlinedIcon />

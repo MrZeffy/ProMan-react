@@ -6,6 +6,7 @@ const getDummyTask = () => {
         taskTitle: 'Task 1',
         taskDeadline: deadlineDate,
         taskDescription: 'Dummy description',
+        taskStatus: 0
     }
     return taskDetails;
 }

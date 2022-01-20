@@ -39,7 +39,7 @@ const Login = ({signUp}) => {
         .then((data)=>{
             console.log("Data from second request", data);
             if(data.username){
-                setLoggedIn({username: data.username});
+                setLoggedIn({username: data.username, name: data.name});
             }
         })
         .catch((err)=>{
